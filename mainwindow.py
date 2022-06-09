@@ -2,24 +2,28 @@
 import tkinter as tk
 from tkinter import Tk
 from tkinter import ttk
-from tkinter.messagebox import showinfo
 
-import sqlite3
-
+#windows
+import expensewindow as expwin
+import savingswindow as savwin
 class MainWindow(tk.Tk):
     def __init__(self) -> None:
         super().__init__()
 
         self.title("PyMoney")
-        self.geometry('400x500')
+        self.geometry("800x600")
 
-        self.buttonPlus = ttk.Button(self, text="Expenses")
+        self.buttonPlus = ttk.Button(self, text="Expenses", command=self.OpenExpenseWindow_EV)
         self.buttonPlus.grid(row=1, column=1) # padx()
 
-    def numButtonPressed_EV(self):
-        oldValue = self.equationLabel.value
-        self.equationLabel.config(text=f"{str(oldValue) + str('1')}")
+        global expenseWindow
+        global savingWindow
 
+    def OpenExpenseWindow_EV(self):
+        self.expenseWindow = expwin.ExpenseWindow()
+
+    def OpenSavingsWindow_EV(self):
+        self.savingsWindow = savwin.SavingsWindow()
 
 if __name__ == '__main__':
     app = MainWindow()
