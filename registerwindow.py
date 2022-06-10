@@ -1,12 +1,12 @@
-#loginwindow.py
+# registerwindow.py
 import tkinter as tk
 from tkinter import Tk
 from tkinter import ttk
 
-class LoginWindow(tk.Tk):
+class RegisterWindow(tk.Tk):
     def __init__(self) -> None:
         super().__init__()
 
         # set initial data
-        self.title("Login Window")
+        self.title("Register Window")
         self.geometry("500x600")

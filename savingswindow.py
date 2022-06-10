@@ -8,6 +8,6 @@ class SavingsWindow(tk.Tk):
         super().__init__()
 
         # set initial data
-        self.title("Expense Window")
+        self.title("Savings Window")
         self.geometry("500x600")
         
