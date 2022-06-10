@@ -6,17 +6,17 @@ from tkinter import Tk
 from tkinter import ttk
 
 # windows
-import expensewindow as expwin
-import savingswindow as savwin
-import loginwindow as logwin
-import registerwindow as regwin
+import core.expensewindow as expwin
+import core.savingswindow as savwin
+import core.loginwindow as logwin
+import core.registerwindow as regwin
 
 # db creator
-import database as db
+import tools.database as db
 
 # other
 import sqlite3 as sql
-import errorhandler as eh
+import tools.errorhandler as eh
 import os.path
 
 class MainWindow(tk.Tk):

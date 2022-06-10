@@ -1,6 +1,6 @@
 # database.py
 import sqlite3 as sql
-import errorhandler as eh
+import tools.errorhandler as eh
 
 def createDatabase():
     # init connection
