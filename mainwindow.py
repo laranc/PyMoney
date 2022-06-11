@@ -39,6 +39,10 @@ class main_window(tk.Tk):
         self.cursor = db.create_database_cursor(self.conn)
         print(self.cursor)
 
+        ### DEBUG ###
+        self.purge_database(self.conn, self.cursor)
+
+
         # verify database
         self.verify_database()
         # get database data
@@ -53,8 +57,33 @@ class main_window(tk.Tk):
         self.title("PyMoney")
         self.geometry("800x600")
 
+
+        # title label
+        self.title_label = ttk.Label(self, text="PyMoney")
+        self.title_label.grid(row=0, column=4)
+
+        # window buttons
         self.expense_window_button = ttk.Button(self, text="Expenses", command=self.open_expense_window_EV)
-        self.expense_window_button.grid(row=1, column=1) # padx()
+        self.expense_window_button.grid(row=4, column=4) # padx()
+
+        self.savings_window_button = ttk.Button(self, text="Savings", command=self.open_savings_window_EV)
+        self.savings_window_button.grid(row=5, column=4)
+
+        # grid items
+
+
+        ### free resources ### 
+        db.disconnect_from_database(self.conn, self.cursor)
+
+
+    ### DEBUG ###
+    def purge_database(self, conn, cursor) -> None:
+        cursor.execute("""
+            DELETE FROM UserData;
+        """)
+        conn.commit()
+        print("DEBUG:: Database Purged!!")
+
 
     # db functions
     def verify_database(self) -> bool:
@@ -90,13 +119,12 @@ class main_window(tk.Tk):
     # user creation
     def create_new_user(self):
         self.register_window = regwin.register_window()
-        pass
+        pass # window execution
 
     # user login
     def login_user(self):
         self.login_window = logwin.login_window()
         pass
-
             
     # event functions
     def open_expense_window_EV(self) -> None:
@@ -104,6 +132,7 @@ class main_window(tk.Tk):
 
     def open_savings_window_EV(self) -> None:
         self.savingsW_wndow = savwin.savings_window()
+
 
 if __name__ == '__main__':
     app = main_window()
