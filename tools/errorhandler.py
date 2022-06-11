@@ -3,12 +3,12 @@
 from email import message
 
 # general db handling
-class databaseCreateError(Exception):
+class database_create_error(Exception):
     pass
 
-class databaseConnectionError(Exception):
+class database_connection_error(Exception):
     pass
 
 # query handling
-class databaseQueryFailed(Exception):
+class database_query_failed(Exception):
     pass

@@ -3,7 +3,7 @@ import tkinter as tk
 from tkinter import Tk
 from tkinter import ttk
 
-class SavingsWindow(tk.Tk):
+class savings_Window(tk.Tk):
     def __init__(self) -> None:
         super().__init__()
 

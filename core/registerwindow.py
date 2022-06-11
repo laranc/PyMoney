@@ -4,7 +4,7 @@ from tkinter import Tk
 from tkinter import ttk
 from tkinter import Text
 
-class RegisterWindow(tk.Tk):
+class register_window(tk.Tk):
     def __init__(self) -> None:
         super().__init__()
 
@@ -13,25 +13,25 @@ class RegisterWindow(tk.Tk):
         self.geometry("500x600")
 
         # title label
-        self.titleLabel = ttk.Label(self, text="Welcome New User!")
-        self.titleLabel.grid(row=1, column=5)
+        self.title_label = ttk.Label(self, text="Welcome New User!")
+        self.title_label.grid(row=1, column=5)
 
         # set the labels
-        self.firstnameLabel = ttk.Label(self, text="Firstname:")
-        self.lastnameLabel = ttk.Label(self, text="Lastname:")
-        self.ageLabel = ttk.Label(self, text="Age:")
-        self.dateofbirthLabel = ttk.Label(self, text="Date of Birth:")
-        self.passwordLabel = ttk.Label(self, text="Password:")
+        self.firstname_label = ttk.Label(self, text="Firstname:")
+        self.lastname_label = ttk.Label(self, text="Lastname:")
+        self.age_label = ttk.Label(self, text="Age:")
+        self.dateofbirth_label = ttk.Label(self, text="Date of Birth:")
+        self.password_label = ttk.Label(self, text="Password:")
 
         # position labels
-        self.firstnameLabel.grid(row=3, column=3)
-        self.lastnameLabel.grid(row=4, column=3)
-        self.ageLabel.grid(row=4, column=3)
-        self.dateofbirthLabel.grid(row=5, column=3)
-        self.passwordLabel.grid(row=6, column=3)
+        self.firstname_label.grid(row=3, column=3)
+        self.lastname_label.grid(row=4, column=3)
+        self.age_label.grid(row=4, column=3)
+        self.dateofbirth_label.grid(row=5, column=3)
+        self.password_label.grid(row=6, column=3)
 
         # set the input boxes 
-        self.firstnameTextWidget = Text(self)
-        self.firstnameTextWidgetPlacholder = "eg.John doe"
-        self.firstnameTextWidget.grid(row=3, column=4)
-        self.firstnameTextWidget.insert("end", self.firstnameTextWidgetPlacholder)
+        self.firstname_text_widget = Text(self)
+        self.firstname_text_widget_placeholder = "eg.John doe"
+        self.firstname_text_widget.grid(row=3, column=4)
+        self.firstname_text_widget.insert("end", self.firstname_text_widget_placeholder)

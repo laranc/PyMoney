@@ -19,50 +19,50 @@ import sqlite3 as sql
 import tools.errorhandler as eh
 import os.path
 
-class MainWindow(tk.Tk):
+class main_window(tk.Tk):
     def __init__(self) -> None:
         super().__init__()
         # windows
-        global expenseWindow
-        global savingWindow
-        global loginWindow
-        global registerwindow
+        global expense_window
+        global saving_window
+        global login_window
+        global register_window
         
         # db constants
         global conn
         global cursor
-        global dbData
+        global db_data
 
         # connect to db
-        self.conn = db.connectToDatabase("user_data.db")
+        self.conn = db.connect_to_database("user_data.db")
         print(self.conn)
-        self.cursor = db.createDatabaseCursor(self.conn)
+        self.cursor = db.create_database_cursor(self.conn)
         print(self.cursor)
 
         # verify database
-        self.verifyDatabase()
+        self.verify_database()
         # get database data
-        self.dbData = self.getDatabaseData()
+        self.dbData = self.get_database_data()
         # verify database data
-        if self.verifyDatabaseData(self.dbData) is False:
-            self.createNewUser() # delay mainwindow creation as much as possible!!!
+        if self.verify_database_data(self.dbData) is False:
+            self.create_new_user() # delay mainwindow creation as much as possible!!!
         else: 
-            self.loginUser()
+            self.login_user()
 
 
         self.title("PyMoney")
         self.geometry("800x600")
 
-        self.expenseWindowButton = ttk.Button(self, text="Expenses", command=self.OpenExpenseWindow_EV)
-        self.expenseWindowButton.grid(row=1, column=1) # padx()
+        self.expense_window_button = ttk.Button(self, text="Expenses", command=self.open_expense_window_EV)
+        self.expense_window_button.grid(row=1, column=1) # padx()
 
     # db functions
-    def verifyDatabase(self) -> bool:
+    def verify_database(self) -> bool:
         if not os.path.exists("user_data.db"):
             try:
-                db.createDatabase()
+                db.create_database()
             except:
-                raise eh.databaseCreateError()
+                raise eh.database_create_error()
         else: # run initial query
             print(self.conn)
             print(self.cursor)
@@ -71,16 +71,16 @@ class MainWindow(tk.Tk):
             print(dbData)
             return True
 
-    def getDatabaseData(self) -> list:
+    def get_database_data(self) -> list:
         try:
             self.cursor.execute("SELECT * FROM UserData")
             dbData = self.cursor.fetchall()
             return dbData
         except:
-            raise eh.databaseQueryFailed()
+            raise eh.database_query_dailed()
 
-    def verifyDatabaseData(self, dbData) -> bool:
-        if not dbData: # bool checking here works to determine if list is empty or not
+    def verify_database_data(self, db_data) -> bool:
+        if not db_data: # bool checking here works to determine if list is empty or not
             print("Database Empty!")
             return False
         else:
@@ -88,23 +88,23 @@ class MainWindow(tk.Tk):
             return True
     
     # user creation
-    def createNewUser(self):
-        self.registerWindow = regwin.RegisterWindow()
+    def create_new_user(self):
+        self.register_window = regwin.register_window()
         pass
 
     # user login
-    def loginUser(self):
-        self.loginWindow = logwin.LoginWindow()
+    def login_user(self):
+        self.login_window = logwin.login_window()
         pass
 
             
     # event functions
-    def OpenExpenseWindow_EV(self) -> None:
-        self.expenseWindow = expwin.ExpenseWindow()
+    def open_expense_window_EV(self) -> None:
+        self.expense_window = expwin.expense_window()
 
-    def OpenSavingsWindow_EV(self) -> None:
-        self.savingsWindow = savwin.SavingsWindow()
+    def open_savings_window_EV(self) -> None:
+        self.savingsW_wndow = savwin.savings_window()
 
 if __name__ == '__main__':
-    app = MainWindow()
+    app = main_window()
     app.mainloop()
