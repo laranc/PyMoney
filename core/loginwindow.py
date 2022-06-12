@@ -71,7 +71,8 @@ class login_window(tk.Tk):
         db_data = cursor.fetchall()
 
         # make user from database
-        db_user = u.User(db_data[0], db_data[1], db_data[2], db_data[3], db_data[4])
+        # database data is a list with a tuple as its only item containing the relevent data
+        db_user = u.User(db_data[0][0], db_data[0][1], db_data[0][2], db_data[0][3], db_data[0][4])
 
         # get user from inputs
         user_firstname = self.firstname_text_widget.get(1.0, tk.END+"-1c")
@@ -84,17 +85,21 @@ class login_window(tk.Tk):
         in_user = u.User(user_firstname, user_lastname, user_age, user_dateofbirth, user_password)
 
         # check data against db data
-        if db_data[0] != in_user.firstname:
+        if db_data[0][0] != in_user.firstname:
             messagebox.showerror(title="login failed!", message="Firstname invalid!")
-        elif db_data[1] != in_user.lastname:
+        elif db_data[0][1] != in_user.lastname:
             messagebox.showerror(title="login failed!", message="Lastname invalid!")
-        elif db_data[2] != in_user.age:
+        elif db_data[0][2] != in_user.age:
             messagebox.showerror(title="login failed!", message="Age invalid!")
-        elif db_data[3] != in_user.dateofbirth:
+        elif db_data[0][3] != in_user.dateofbirth:
             messagebox.showerror(title="login failed!", message="Date Of Birth invalid!")
-        elif db_data[4] != in_user.password:
+        elif db_data[0][4] != in_user.password:
             messagebox.showerror(title="login failed!", message="Password invalid!")
         else: # input valid
             messagebox.showinfo(title="login succesfull", message="Login Succesfull")
+
+            # free db resources
+            db.disconnect_from_database(conn, cursor)
+
             # close window
             self.destroy()

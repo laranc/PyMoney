@@ -40,7 +40,7 @@ class main_window(tk.Tk):
         print(self.cursor)
 
         ### DEBUG ###
-        self.purge_database(self.conn, self.cursor)
+        #self.purge_database(self.conn, self.cursor)
 
 
         # verify database
