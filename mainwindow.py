@@ -60,6 +60,11 @@ class main_window(tk.Tk):
         self.title_label = ttk.Label(self, text="PyMoney")
         self.title_label.grid(row=0, column=4)
 
+        # time label
+        self.datetime_label = ttk.Label(
+            self, text="" + time.strftime("%a, %d %b %Y", time.localtime(time.time())))
+        self.datetime_label.grid(row=0, column=5)
+
         # window buttons
         self.expense_window_button = ttk.Button(
             self, text="Expenses", command=self.open_expense_window_EV)
@@ -78,9 +83,6 @@ class main_window(tk.Tk):
 
         ### free resources ###
         db.disconnect_from_database(self.conn, self.cursor)
-
-        # time label
-        self.show_datetime()
 
     ### DEBUG ###
     def purge_database(self, conn, cursor) -> None:
@@ -138,16 +140,6 @@ class main_window(tk.Tk):
 
     def open_income_window_EV(self) -> None:
         self.income_window = incwin.income_window()
-
-    # main loop functions
-
-    def show_datetime(self) -> None:
-        while True:
-            time.sleep(1)
-            self.datetime_label = ttk.Label(
-                self, text="" + time.ctime(time.time()))
-            self.datetime_label.grid(row=0, column=5)
-            self.update()
 
 
 if __name__ == '__main__':
