@@ -42,6 +42,15 @@ class main_window(tk.Tk):
         ### DEBUG ###
         #self.purge_database(self.conn, self.cursor) 
 
+         # HUGE PROBLEM # 
+        ## THIS MUST BE FIXED ##
+        # connect to db
+        self.conn = db.connect_to_database("user_data.db")
+        print(self.conn)
+        self.cursor = db.create_database_cursor(self.conn)
+        print(self.cursor)
+
+
         # verify database
         self.verify_database()
         # get database data
@@ -51,14 +60,6 @@ class main_window(tk.Tk):
             self.create_new_user()  # delay mainwindow creation as much as possible!!!
         else:
             self.login_user()
-
-        # HUGE PROBLEM # 
-        ## THIS MUST BE FIXED ##
-        # connect to db
-        self.conn = db.connect_to_database("user_data.db")
-        print(self.conn)
-        self.cursor = db.create_database_cursor(self.conn)
-        print(self.cursor)
 
         self.title("PyMoney")
         self.geometry("800x600")

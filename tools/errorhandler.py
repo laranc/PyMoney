@@ -1,7 +1,5 @@
 # errorhandler.py
 
-from email import message
-
 # general db handling
 class database_create_error(Exception):
     pass
