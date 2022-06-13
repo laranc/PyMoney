@@ -11,12 +11,12 @@ import core.incomewindow as incwin
 import core.loginwindow as logwin
 import core.registerwindow as regwin
 
-# db creator
 import tools.database as db
+import tools.datahandler as dh
+import tools.errorhandler as eh
 
 # other
 import sqlite3 as sql
-import tools.errorhandler as eh
 import os.path
 import time
 
@@ -35,13 +35,12 @@ class main_window(tk.Tk):
         global cursor
         global db_data
 
-        # connect to db
-        self.conn = db.connect_to_database("user_data.db")
-        print(self.conn)
-        self.cursor = db.create_database_cursor(self.conn)
-        print(self.cursor)
+        # time data
+        global time_at_start
+        global time_data
 
-        #self.purge_database(self.conn, self.cursor) ### DEBUG ###
+        ### DEBUG ###
+        #self.purge_database(self.conn, self.cursor) 
 
         # verify database
         self.verify_database()
@@ -53,6 +52,14 @@ class main_window(tk.Tk):
         else:
             self.login_user()
 
+        # HUGE PROBLEM # 
+        ## THIS MUST BE FIXED ##
+        # connect to db
+        self.conn = db.connect_to_database("user_data.db")
+        print(self.conn)
+        self.cursor = db.create_database_cursor(self.conn)
+        print(self.cursor)
+
         self.title("PyMoney")
         self.geometry("800x600")
 
@@ -61,9 +68,14 @@ class main_window(tk.Tk):
         self.title_label.grid(row=0, column=4)
 
         # time label
+        # get current time
+        self.time_at_start = time.strftime("%a, %d %b %Y", time.localtime(time.time()))
         self.datetime_label = ttk.Label(
-            self, text="" + time.strftime("%a, %d %b %Y", time.localtime(time.time())))
+            self, text="" + self.time_at_start)
         self.datetime_label.grid(row=0, column=5)
+
+        # run time configuration
+        self.configure_time_system()
 
         # window buttons
         self.expense_window_button = ttk.Button(
@@ -92,8 +104,26 @@ class main_window(tk.Tk):
         conn.commit()
         print("DEBUG:: Database Purged!!")
 
-    # db functions
+    # setup time system
+    def configure_time_system(self) -> None:
+        self.time_data = self.time_at_start.split()
+        day = time_data[0]
+        date = time_data[1]
+        month = time_data[2]
+        year = time_data[3]
 
+        # look for json file
+        if not os.path.exists(f"./json/{year}.json"):
+            print("data file not present! creating new one!")
+            dh.create_datafile() # by which case we need to push new data
+        else:
+            print("data validated!") # by which case we need to pull the data
+
+        print(time_data)
+
+
+
+    # db functions
     def verify_database(self) -> bool:
         if not os.path.exists("user_data.db"):
             try:
@@ -126,7 +156,7 @@ class main_window(tk.Tk):
 
     # user creation
     def create_new_user(self):
-        self.register_window = regwin.register_window()
+        self.register_window = regwin.register_window()        
         pass  # window execution
 
     # user login
