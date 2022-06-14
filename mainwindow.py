@@ -36,7 +36,7 @@ class main_window(tk.Tk):
         global db_data
 
         # time data
-        global time_at_start
+        global time_raw
         global time_data
 
         ### DEBUG ###
@@ -70,9 +70,9 @@ class main_window(tk.Tk):
 
         # time label
         # get current time
-        self.time_at_start = time.strftime("%a, %d %b %Y", time.localtime(time.time()))
+        self.time_raw = time.strftime("%a, %d %b %Y", time.localtime(time.time()))
         self.datetime_label = ttk.Label(
-            self, text="" + self.time_at_start)
+            self, text="" + self.time_raw)
         self.datetime_label.grid(row=0, column=5)
 
         # run time configuration
@@ -107,22 +107,20 @@ class main_window(tk.Tk):
 
     # setup time system
     def configure_time_system(self) -> None:
-        self.time_data = self.time_at_start.split()
-        day = time_data[0]
-        date = time_data[1]
-        month = time_data[2]
-        year = time_data[3]
+        self.time_data = self.time_raw.split()
+        day = self.time_data[0]
+        date = self.time_data[1]
+        month = self.time_data[2]
+        year = self.time_data[3]
 
         # look for json file
         if not os.path.exists(f"./json/{year}.json"):
             print("data file not present! creating new one!")
-            dh.create_datafile() # by which case we need to push new data
+            dh.create_datafile(year) # by which case we need to push new data
         else:
             print("data validated!") # by which case we need to pull the data
 
-        print(time_data)
-
-
+        print(self.time_data)
 
     # db functions
     def verify_database(self) -> bool:
@@ -167,7 +165,7 @@ class main_window(tk.Tk):
 
     # event functions
     def open_expense_window_EV(self) -> None:
-        self.expense_window = expwin.expense_window()
+        self.expense_window = expwin.expense_window(self.time_data, self.time_raw)
 
     def open_income_window_EV(self) -> None:
         self.income_window = incwin.income_window()

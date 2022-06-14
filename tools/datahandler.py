@@ -7,17 +7,22 @@ import tools.user as u
 
 
 def create_datafile(year: str) -> None:
-    filepath = os.path.join(os.curdir_, f"{year}.json")
+    # filepath = os.path.join(os.curdir, f"/json/{year}.json")
+    # print(filepath)
     # assuming that file doesent exist, based on prequisites for function call:
     try:
-        datafile_primary = open(filepath, 'w')
+        datafile_primary = open(f"./json/{year}.json", 'w')
     except:
         print("Couldnt make file!")
     
 def new_data_entry():
     pass
 
-def push_data(time_data: list[str]):
+def pull_data(year: str) -> None:
+    datafile_primary = open(f"./json/{year}.json", 'r')
+    pass
+
+def push_new_data(time_data: list[str]):
     # create db connection
     conn = db.connect_to_database("user_data.db")
     cursor = db.create_database_cursor(conn)
@@ -47,4 +52,3 @@ def push_data(time_data: list[str]):
     }
 
     # } 
-    pass
