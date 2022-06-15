@@ -18,11 +18,33 @@ def create_datafile(year: str) -> None:
 def new_data_entry():
     pass
 
-def pull_data(year: str) -> None:
-    datafile_primary = open(f"./json/{year}.json", 'r')
+def pull_data(year: str) -> list[str]:
+    if os.stat(f"./json/{year}.json").st_size == 0:
+        return []
+    else:
+        datafile_primary = open(f"./json/{year}.json", 'r')
+        data = json.load(datafile_primary)
+        month = data['month']
+        user_id = data['user-id']
+        total_expenses = data['total-monthly-expenses']
+        total_income = data['total-monthly-income']
+        local_expenses = {}
+        local_incomes = {}
+        for expense_name in data['expenses']:
+            local_expenses[f"{expense_name}"] = data['expenses'][expense_name]
+        for income_name in data['incomes']:
+            local_incomes[f"{income_name}"] = data['incomes'][income_name]
+
+        print(local_expenses)
+        print(local_incomes)
+
+        data_out: list[str] = [str(month), str(user_id), str(total_expenses), str(total_income), local_expenses, local_incomes]
+        return data_out
+
+def push_data() -> None:
     pass
 
-def push_new_data(time_data: list[str]):
+def push_new_data(time_data: list[str]) -> None:
     # create db connection
     conn = db.connect_to_database("user_data.db")
     cursor = db.create_database_cursor(conn)
