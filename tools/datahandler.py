@@ -24,16 +24,16 @@ def pull_data(year: str) -> list[str]:
     else:
         datafile_primary = open(f"./json/{year}.json", 'r')
         data = json.load(datafile_primary)
-        month = data['month']
-        user_id = data['user-id']
-        total_expenses = data['total-monthly-expenses']
-        total_income = data['total-monthly-income']
+        month = data["month"]
+        user_id = data["user-id"]
+        total_expenses = data["total-monthly-expenses"]
+        total_income = data["total-monthly-income"]
         local_expenses = {}
         local_incomes = {}
-        for expense_name in data['expenses']:
-            local_expenses[f"{expense_name}"] = data['expenses'][expense_name]
-        for income_name in data['incomes']:
-            local_incomes[f"{income_name}"] = data['incomes'][income_name]
+        for expense_name in data["expenses"]:
+            local_expenses[f"{expense_name}"] =str(data["expenses"][expense_name])
+        for income_name in data["incomes"]:
+            local_incomes[f"{income_name}"] = str(data["incomes"][income_name])
 
         print(local_expenses)
         print(local_incomes)
@@ -41,7 +41,18 @@ def pull_data(year: str) -> list[str]:
         data_out: list[str] = [str(month), str(user_id), str(total_expenses), str(total_income), local_expenses, local_incomes]
         return data_out
 
-def push_data() -> None:
+def push_data(json_file_name: str, expense_name: str, expense_value: str) -> None:
+    # loop through json
+    # TO DO #
+    data_file = open(f"./json/{json_file_name}.json", 'r+')
+    json_data = json.load(data_file)
+    data_file.truncate(0) # empty file
+    json_entry =  json_data["expenses"][f"{expense_name}"] = f"{expense_value}"
+    json_string = json.dumps(json_data, indent=4, sort_keys=True) # save data to serialised object
+    json.dump(json_string, data_file)
+    # print(json.load(data_file))
+
+def remove_data() -> None:
     pass
 
 def push_new_data(time_data: list[str]) -> None:
