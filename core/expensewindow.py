@@ -95,8 +95,8 @@ class expense_window(tk.Tk):
 
         # submit data
         self.remove_new_expense_button = ttk.Button(
-            self, text="Add New Expense", command=self.remove_expense_EV)
-        self.remove_new_expense_button.grid(row=11, column=1)
+            self, text="Remove Expense", command=self.remove_expense_EV)
+        self.remove_new_expense_button.grid(row=11, column=4)
 
     def display_data(self) -> None:
         # get json data
@@ -116,8 +116,11 @@ class expense_window(tk.Tk):
                 row += 1
 
     def add_new_expense_EV(self) -> None:
+        #name = self.add_expenses_name_input.get(1.0, tk.END+'-1c')
         name = self.add_expenses_name_input.get(1.0, tk.END+'-1c')
         value = self.add_expenses_value_input.get(1.0, tk.END+'-1c')
+        print(f"EXPENSE NAME: {name}")
+        print(f"EXPENSE VALUE: {value}")
 
         dh.push_data(self.time_data[3], "expenses", name, value)
         self.display_data()

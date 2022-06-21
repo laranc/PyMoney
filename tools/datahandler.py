@@ -21,18 +21,18 @@ def new_data_entry():
 
 
 def pull_data(year: str) -> list[str]:
-    if os.stat(f"./json/{year}.json").st_size == 0:
+    if os.stat(f"./json/{year}.json").st_size == 0: # if no file exists
         return []
     else:
         datafile_primary = open(f"./json/{year}.json", 'r')
-        data = json.load(datafile_primary)
-        month = data["month"]
+        data: dict = json.load(datafile_primary)
+        month = data["month"] # organise data
         user_id = data["user-id"]
         total_expenses = data["total-monthly-expenses"]
         total_income = data["total-monthly-income"]
-        local_expenses = {}
+        local_expenses = {} # make dictionary for expense and income data
         local_incomes = {}
-        for expense_name in data["expenses"]:
+        for expense_name in data["expenses"]: # make dictionary
             local_expenses[f"{expense_name}"] = str(
                 data["expenses"][expense_name])
         for income_name in data["incomes"]:
@@ -50,12 +50,26 @@ def push_data(json_file_name: str, data_type: str, data_name: str, data_value: s
     # loop through json
     # TO DO #
     data_file = open(f"./json/{json_file_name}.json", 'r+')
-    json_data = json.load(data_file)
+    #json_data = json.loads(json_file_name)
+    json_data = pull_data(json_file_name)
     data_file.truncate(0)  # empty file
-    json_entry = json_data[data_type][data_name] = f"{data_value}"
-    # save data to serialised object
-    json_string = json.dumps(json_data, indent=4, sort_keys=True)
-    json.dump(json_string, data_file)
+    json_data_dict = {}
+    json_data_dict["month"] = json_data[0] # WATCH CASTING
+    json_data_dict["user-id"] = json_data[1]
+    json_data_dict["total-monthly-expenses"] = json_data[2]
+    json_data_dict["total-monthly-income"] = json_data[3]
+    json_data_dict["expenses"] = json_data[4]
+    json_data_dict["incomes"] = json_data[5]
+
+    # make new data
+    if data_type == "expenses":
+        json_data_dict["expenses"][data_name] = data_value
+    else:
+        json_data_dict["incomes"][data_name] = data_value
+
+    print(f"DICT = {json_data_dict}")
+    #json.dumps(json_data_dict, sort_keys=True, indent=4, separators=(',', ': '))
+    json.dump(json_data_dict, data_file)
     # print(json.load(data_file))
 
 
@@ -69,7 +83,6 @@ def remove_data(json_file_name: str, data_type: str, data_name: str, data_value:
             json_data.append(entry)
         else:
             continue
-
     pass
 
 

@@ -1,9 +1,10 @@
 import tkinter as tk
-from tkinter import ttk, Tk, Text, PhotoImage
+from tkinter import ttk
+from tkinter import Tk
+from tkinter import Text
+from tkinter import PhotoImage
 
-# database
 import tools.datahandler as dh
-
 
 class calculator_window(tk.Tk):
     def __init__(self, time_data: list[str], time_raw: str) -> None:
@@ -14,7 +15,7 @@ class calculator_window(tk.Tk):
         self.time_raw = time_raw
 
         # get data from json
-        json_data: list[str] = dh.pull_data[self.time_data[3]]
+        self.json_data: list[str] = dh.pull_data(self.time_data[3])
 
         # set window icon
         # self.win_icon = PhotoImage(file="./icons/")
@@ -32,12 +33,12 @@ class calculator_window(tk.Tk):
 
         # total income label
         self.total_income_label = ttk.Label(
-            self, text=f"Total Income: {self.total_income_calculation(json_data)}")
+            self, text=f"Total Income: {self.total_income_calculation()}")
         self.total_income_label.grid(row=2, column=4)
 
         # total expenses label
         self.total_expenses_label = ttk.Label(
-            self, text=f"Total Expenses: {self.total_expenses_calculation(json_data)}")
+            self, text=f"Total Expenses: {self.total_expenses_calculation()}")
         self.total_expenses_label.grid(row=2, column=6)
 
         # total savings label
@@ -47,45 +48,45 @@ class calculator_window(tk.Tk):
 
         # previous savings label
         self.previous_savings_label = ttk.Label(
-            self, text=f"Savings for previous month: {self.previous_savings_calculation(json_data)}")
+            self, text=f"Savings for previous month: {self.previous_savings_calculation()}")
         self.previous_savings_label.grid(row=5, column=4)
 
         # average income label
         self.average_income_label = ttk.Label(
-            self, text=f"Average income: {self.average_income_calculation(json_data)}")
+            self, text=f"Average income: {self.average_income_calculation()}")
         self.average_income_label.grid(row=5, column=5)
 
-        # average expenses labek
+        # average expenses label
         self.average_expenses_label = ttk.Label(
-            self, text=f"Average expenses: {self.average_expenses_calculation(json_data)}")
+            self, text=f"Average expenses: {self.average_expenses_calculation()}")
         self.average_expenses_label.grid(row=5, column=6)
 
-    def total_income_calculation(self, data: list[str]) -> int:
+    def total_income_calculation(self) -> str:
         value: int
         total = 0
-        for key in data[5]:
-            value = data[5].get(key)
+        for key in self.json_data[5]: # get income from dictionary
+            value = int(self.json_data[5][key]) # pills here
             total += value
 
-        return total
+        return str(total)
 
-    def total_expenses_calculation(self, data: list[str]) -> int:
+    def total_expenses_calculation(self) -> str:
         value: int
         total = 0
-        for key in data[4]:
-            value = data[4].get(key)
+        for key in self.json_data[4]:
+            value = int(self.json_data[4][key])
             total += value
 
-        return total
+        return str(total)
 
-    def total_savings_calculation(self) -> int:
-        return self.total_income_calculation() - self.total_expenses_calculation()
+    def total_savings_calculation(self) -> str:
+        return str(int(self.total_income_calculation()) - int(self.total_expenses_calculation())) # pills here
 
-    def previous_savings_calculation(self, data: list[str]) -> int:
+    def previous_savings_calculation(self) -> str:
         pass
 
-    def average_income_calculation(self, data: list[str]) -> int:
+    def average_income_calculation(self) -> str:
         pass
 
-    def average_expenses_calculation(self, data: list[str]) -> int:
+    def average_expenses_calculation(self) -> str:
         pass

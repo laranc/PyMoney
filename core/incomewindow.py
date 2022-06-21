@@ -77,26 +77,26 @@ class income_window(tk.Tk):
         remove_income_frame.grid(row=10, column=4)
 
         self.remove_income_name_label = ttk.Label(
-            add_income_frame, text="Income Name")
+            remove_income_frame, text="Income Name")
         self.remove_income_name_label.grid(row=4, column=4)
 
         self.remove_income_value_label = ttk.Label(
-            add_income_frame, text="Income Value")
+            remove_income_frame, text="Income Value")
         self.remove_income_value_label.grid(row=5, column=4)
 
         # text input
         self.remove_income_name_input = Text(
-            add_income_frame, height=1, width=20)
+            remove_income_frame, height=1, width=20)
         self.remove_income_name_input.grid(row=4, column=5)
 
         self.remove_income_value_input = Text(
-            add_income_frame, height=1, width=20)
+            remove_income_frame, height=1, width=20)
         self.remove_income_value_input.grid(row=5, column=5)
 
         # submit data
         self.remove_new_income_button = ttk.Button(
-            self, text="Add New Income", command=self.remove_income_EV)
-        self.remove_new_income_button.grid(row=11, column=1)
+            self, text="Remove Income", command=self.remove_income_EV)
+        self.remove_new_income_button.grid(row=11, column=4)
 
     def display_data(self) -> None:
         # get json data
