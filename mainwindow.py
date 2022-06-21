@@ -2,14 +2,14 @@
 # imports
 # tkinter
 import tkinter as tk
-from tkinter import Tk
-from tkinter import ttk
+from tkinter import ttk, Tk
 
 # windows
 import core.expensewindow as expwin
 import core.incomewindow as incwin
 import core.loginwindow as logwin
 import core.registerwindow as regwin
+import core.calculatorwindow as clcwin
 
 import tools.database as db
 import tools.datahandler as dh
@@ -29,6 +29,7 @@ class main_window(tk.Tk):
         global income_window
         global login_window
         global register_window
+        global calculator_window
 
         # db constants
         global conn
@@ -40,16 +41,15 @@ class main_window(tk.Tk):
         global time_data
 
         ### DEBUG ###
-        #self.purge_database(self.conn, self.cursor) 
+        #self.purge_database(self.conn, self.cursor)
 
-         # HUGE PROBLEM # 
+        # HUGE PROBLEM #
         ## THIS MUST BE FIXED ##
         # connect to db
         self.conn = db.connect_to_database("user_data.db")
         print(self.conn)
         self.cursor = db.create_database_cursor(self.conn)
         print(self.cursor)
-
 
         # verify database
         self.verify_database()
@@ -70,7 +70,8 @@ class main_window(tk.Tk):
 
         # time label
         # get current time
-        self.time_raw = time.strftime("%a, %d %b %Y", time.localtime(time.time()))
+        self.time_raw = time.strftime(
+            "%a, %d %b %Y", time.localtime(time.time()))
         self.datetime_label = ttk.Label(
             self, text="" + self.time_raw)
         self.datetime_label.grid(row=0, column=5)
@@ -87,10 +88,14 @@ class main_window(tk.Tk):
             self, text="Income", command=self.open_income_window_EV)
         self.income_window_button.grid(row=5, column=4)
 
+        self.calculator_window_button = ttk.Button(
+            self, text="Calculator", command=self.open_calculator_window_EV)
+        self.calculator_window_button.grid(row=6, column=4)
+
         # exit button
         self.exit_button = ttk.Button(
             self, text="Exit", command=lambda: self.destroy())
-        self.exit_button.grid(row=6, column=4)
+        self.exit_button.grid(row=7, column=4)
 
         # grid items
 
@@ -116,9 +121,9 @@ class main_window(tk.Tk):
         # look for json file
         if not os.path.exists(f"./json/{year}.json"):
             print("data file not present! creating new one!")
-            dh.create_datafile(year) # by which case we need to push new data
+            dh.create_datafile(year)  # by which case we need to push new data
         else:
-            print("data validated!") # by which case we need to pull the data
+            print("data validated!")  # by which case we need to pull the data
 
         print(self.time_data)
 
@@ -155,7 +160,7 @@ class main_window(tk.Tk):
 
     # user creation
     def create_new_user(self):
-        self.register_window = regwin.register_window()        
+        self.register_window = regwin.register_window()
         pass  # window execution
 
     # user login
@@ -165,10 +170,16 @@ class main_window(tk.Tk):
 
     # event functions
     def open_expense_window_EV(self) -> None:
-        self.expense_window = expwin.expense_window(self.time_data, self.time_raw)
+        self.expense_window = expwin.expense_window(
+            self.time_data, self.time_raw)
 
     def open_income_window_EV(self) -> None:
-        self.income_window = incwin.income_window()
+        self.income_window = incwin.income_window(
+            self.time_data, self.time_raw)
+
+    def open_calculator_window_EV(self) -> None:
+        self.calculator_window_button = clcwin.calculator_window(
+            self.time_data, self.time_raw)
 
 
 if __name__ == '__main__':
