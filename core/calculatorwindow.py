@@ -6,9 +6,12 @@ from tkinter import PhotoImage
 
 import tools.datahandler as dh
 
+
 class calculator_window(tk.Tk):
-    def __init__(self, time_data: list[str], time_raw: str) -> None:
+    def __init__(self, time_data: list[str], time_raw: str, user_id: int) -> None:
         super().__init__()
+        # get user id
+        self.user_id = user_id
 
         # get time
         self.time_data = time_data
@@ -64,8 +67,8 @@ class calculator_window(tk.Tk):
     def total_income_calculation(self) -> str:
         value: int
         total = 0
-        for key in self.json_data[5]: # get income from dictionary
-            value = int(self.json_data[5][key]) # pills here
+        for key in self.json_data[5]:  # get income from dictionary
+            value = int(self.json_data[5][key])  # pills here
             total += value
 
         return str(total)
@@ -80,7 +83,8 @@ class calculator_window(tk.Tk):
         return str(total)
 
     def total_savings_calculation(self) -> str:
-        return str(int(self.total_income_calculation()) - int(self.total_expenses_calculation())) # pills here
+        # pills here
+        return str(int(self.total_income_calculation()) - int(self.total_expenses_calculation()))
 
     def previous_savings_calculation(self) -> str:
         pass

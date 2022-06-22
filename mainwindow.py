@@ -14,6 +14,7 @@ import core.calculatorwindow as clcwin
 import tools.database as db
 import tools.datahandler as dh
 import tools.errorhandler as eh
+import tools.user as u
 
 # other
 import sqlite3 as sql
@@ -42,7 +43,7 @@ class main_window(tk.Tk):
         # HUGE PROBLEM #
         ## THIS MUST BE FIXED ##
         # connect to db
-        conn = db.connect_to_database("user_data.db") # create database
+        conn = db.connect_to_database()  # create database
         print(conn)
         cursor = db.create_database_cursor(conn)
         print(cursor)
@@ -57,7 +58,9 @@ class main_window(tk.Tk):
         else:
             self.login_user()
 
-    
+        # get user id
+        user_id = u.current_user_id
+
         self.title("PyMoney")
         self.geometry("800x600")
 
@@ -74,7 +77,22 @@ class main_window(tk.Tk):
         self.datetime_label.grid(row=0, column=5)
 
         # run time configuration
-        self.configure_time_system()
+        time_data = time_raw.split()
+        day = time_data[0]
+        date = time_data[1]
+        month = time_data[2]
+        year = time_data[3]
+
+        # look for json file
+        if not os.path.exists(f"./json/{year}.json"):
+            print("data file not present! creating new one!")
+            dh.create_datafile(year)  # by which case we need to push new data
+        else:
+            print("data validated!")  # by which case we need to pull the data
+
+        print(time_data)
+
+        # get user id
 
         # window buttons
         self.expense_window_button = ttk.Button(
@@ -105,26 +123,9 @@ class main_window(tk.Tk):
         conn.commit()
         print("DEBUG:: Database Purged!!")
 
-    # setup time system
-    def configure_time_system(self) -> None:
-        time_data = time_raw.split()
-        day = time_data[0]
-        date = time_data[1]
-        month = time_data[2]
-        year = time_data[3]
-
-        # look for json file
-        if not os.path.exists(f"./json/{year}.json"):
-            print("data file not present! creating new one!")
-            dh.create_datafile(year)  # by which case we need to push new data
-        else:
-            print("data validated!")  # by which case we need to pull the data
-
-        print(time_data)
-
     # user creation
     def create_new_user(self):
-        self.register_window = regwin.register_window() # window execution
+        self.register_window = regwin.register_window()  # window execution
 
     # user login
     def login_user(self):
@@ -133,15 +134,15 @@ class main_window(tk.Tk):
     # event functions
     def open_expense_window_EV(self) -> None:
         self.expense_window = expwin.expense_window(
-            time_data, time_raw)
+            time_data, time_raw, user_id)
 
     def open_income_window_EV(self) -> None:
         self.income_window = incwin.income_window(
-            time_data, time_raw)
+            time_data, time_raw, user_id)
 
     def open_calculator_window_EV(self) -> None:
         self.calculator_window_button = clcwin.calculator_window(
-            time_data, time_raw)
+            time_data, time_raw, user_id)
 
 
 if __name__ == '__main__':

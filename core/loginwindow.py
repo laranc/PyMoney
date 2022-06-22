@@ -1,4 +1,4 @@
-#loginwindow.py
+# loginwindow.py
 import tkinter as tk
 from tkinter import Tk
 from tkinter import ttk
@@ -9,17 +9,17 @@ from tkinter import messagebox
 import tools.database as db
 import tools.user as u
 
+
 class login_window(tk.Tk):
     def __init__(self) -> None:
         super().__init__()
-
         # set initial data
         self.title("Login Window")
         self.geometry("500x600")
 
-               # set initial data
+        # set initial data
         self.title("Register Window")
-        self.geometry("500x600") # adjust these sizes!!!
+        self.geometry("500x600")  # adjust these sizes!!!
 
         # title label
         self.title_label = ttk.Label(self, text="Welcome Back Existing User!")
@@ -39,12 +39,13 @@ class login_window(tk.Tk):
         self.dateofbirth_label.grid(row=5, column=3)
         self.password_label.grid(row=6, column=3)
 
-        # set the input boxes 
+        # set the input boxes
         self.firstname_text_widget = Text(self, height=1, width=20)
         self.lastname_text_widget = Text(self, height=1, widt=20)
         self.age_text_widget = Text(self, height=1, width=20)
         self.dateofbirth_text_widget = Text(self, height=1, width=20)
-        self.password_text_widget = Entry(self, show="*", width=28) # password field WHY DOESNT IT CONFORM TO WINDOW?
+        # password field WHY DOESNT IT CONFORM TO WINDOW?
+        self.password_text_widget = Entry(self, show="*", width=28)
 
         # position and insert text into input boxes
         self.firstname_text_widget.grid(row=2, column=4)
@@ -54,13 +55,14 @@ class login_window(tk.Tk):
         self.password_text_widget.grid(row=6, column=4)
 
         # submit button
-        self.submit_new_user_button = ttk.Button(self, text="SUBMIT", command=self.validate_user_login_EV)
+        self.submit_new_user_button = ttk.Button(
+            self, text="SUBMIT", command=self.validate_user_login_EV)
 
         # place button
         self.submit_new_user_button.grid(row=7, column=3)
 
     def validate_user_login_EV(self):
-        conn = db.connect_to_database("user_data.db")
+        conn = db.connect_to_database()
         cursor = db.create_database_cursor(conn)
 
         # get db data
@@ -70,34 +72,27 @@ class login_window(tk.Tk):
 
         db_data = cursor.fetchall()
 
-        # make user from database
-        # database data is a list with a tuple as its only item containing the relevent data
-        db_user = u.User(db_data[0][0], db_data[0][1], db_data[0][2], db_data[0][3], db_data[0][4])
-
         # get user from inputs
-        user_firstname = self.firstname_text_widget.get(1.0, tk.END+"-1c")
-        user_lastname = self.lastname_text_widget.get(1.0, tk.END+"-1c")
-        user_age = int(self.age_text_widget.get(1.0, tk.END+"-1c")) # only value really needing validation
-        user_dateofbirth = self.dateofbirth_text_widget.get(1.0, tk.END+"-1c")
-        user_password = self.password_text_widget.get() # password specific
+        in_user_firstname = self.firstname_text_widget.get(1.0, tk.END+"-1c")
+        in_user_lastname = self.lastname_text_widget.get(1.0, tk.END+"-1c")
+        in_user_age = int(self.age_text_widget.get(1.0, tk.END+"-1c"))
+        in_user_dateofbirth = self.dateofbirth_text_widget.get(
+            1.0, tk.END+"-1c")
+        in_user_password = self.password_text_widget.get()  # password specific
 
-        # make user from input
-        in_user = u.User(user_firstname, user_lastname, user_age, user_dateofbirth, user_password)
+        login_check = False
+        # check user against database
+        for i in db_data:
+            if i[1] == in_user_firstname and i[2] == in_user_lastname and i[3] == in_user_age and i[4] == in_user_dateofbirth and i[5] == in_user_password:
+                u.current_user_id = i[0]
+                messagebox.showinfo(title="Login Successfull",
+                                    message="Login Successfull")
+                login_check = True
+                break
 
-        # check data against db data
-        if db_data[0][0] != in_user.firstname:
-            messagebox.showerror(title="login failed!", message="Firstname invalid!")
-        elif db_data[0][1] != in_user.lastname:
-            messagebox.showerror(title="login failed!", message="Lastname invalid!")
-        elif db_data[0][2] != in_user.age:
-            messagebox.showerror(title="login failed!", message="Age invalid!")
-        elif db_data[0][3] != in_user.dateofbirth:
-            messagebox.showerror(title="login failed!", message="Date Of Birth invalid!")
-        elif db_data[0][4] != in_user.password:
-            messagebox.showerror(title="login failed!", message="Password invalid!")
-        else: # input valid
-            messagebox.showinfo(title="login succesfull", message="Login Succesfull")
-
+            if not(login_check):
+                messagebox.showerror(title="Login Failed",
+                                     message="Invalid credential")
             # free db resources
             db.disconnect_from_database(conn, cursor)
 

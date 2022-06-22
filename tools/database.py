@@ -2,13 +2,14 @@
 import sqlite3 as sql
 import tools.errorhandler as eh
 
+
 def create_database():
     # init connection
     try:
-        conn = sql.connect("user_data.db")
+        conn = sql.connect("user_data.sqlite")
     except:
         print("ERR: FAILED TO CREATE DB")
-        raise eh.database_create_error() # custom error handling
+        raise eh.database_create_error()  # custom error handling
 
     # create cursor object
     cursor = conn.cursor()
@@ -17,7 +18,7 @@ def create_database():
     # TEXT type for date translates to 'YYYY-MM-DD HH:MM:SS.SSS' as date, no other date type exists
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS UserData
-        (firstname TEXT, lastname TEXT, age INT, dateofbirth TEXT, password TEXT) 
+        (id INT(10) PRIMARY KEY, firstname TEXT, lastname TEXT, age INT, dateofbirth TEXT, password TEXT);
     ''')
 
     # commit to db
@@ -27,12 +28,15 @@ def create_database():
     cursor.close()
     conn.close()
 
-def connect_to_database(db_name: str) -> sql.Connection: # TESTING seeing if a constant connection can work
+
+# TESTING seeing if a constant connection can work
+def connect_to_database() -> sql.Connection:
     try:
-        conn: sql.Connection = sql.connect(db_name)
+        conn: sql.Connection = sql.connect("user_data.sqlite")
         return conn
     except:
         raise eh.database_connection_error()
+
 
 def create_database_cursor(conn: sql.Connection) -> sql.Cursor:
     try:
@@ -41,6 +45,7 @@ def create_database_cursor(conn: sql.Connection) -> sql.Cursor:
     except:
         print("ERR FAILED TO CREATE CURSOR")
 
+
 def disconnect_from_database(conn: sql.Connection, cursor: sql.Cursor):
     try:
         cursor.close()
@@ -48,10 +53,12 @@ def disconnect_from_database(conn: sql.Connection, cursor: sql.Cursor):
     except:
         print("ERR FAILED TO CLOSE CURSOR AND CONNECTION")
 
+
 def get_database_data(cursor) -> list:
-        try:
-            cursor.execute("SELECT * FROM UserData")
-            db_data = cursor.fetchall()
-            return db_data
-        except:
-            raise eh.database_query_failed()
+    try:
+        cursor.execute("SELECT * FROM UserData")
+        db_data = cursor.fetchall()
+        print(db_data)  # debug
+        return db_data
+    except:
+        raise eh.database_query_failed()

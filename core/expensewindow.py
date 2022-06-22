@@ -7,8 +7,10 @@ import tools.datahandler as dh
 
 
 class expense_window(tk.Tk):
-    def __init__(self, time_data: list[str], time_raw: str) -> None:
+    def __init__(self, time_data: list[str], time_raw: str, user_id: int) -> None:
         super().__init__()
+        # get user id
+        self.user_id = user_id
 
         # get time
         self.time_data = time_data
@@ -77,21 +79,25 @@ class expense_window(tk.Tk):
         self.remove_expenses_frame.grid(row=10, column=4)
 
         self.remove_expenses_frame.remove_expenses_name_label = ttk.Label(
-           self.remove_expenses_frame, text="Expense Name")
-        self.remove_expenses_frame.remove_expenses_name_label.grid(row=4, column=4)
+            self.remove_expenses_frame, text="Expense Name")
+        self.remove_expenses_frame.remove_expenses_name_label.grid(
+            row=4, column=4)
 
         self.remove_expenses_frame.remove_expenses_value_label = ttk.Label(
             self.remove_expenses_frame, text="Expense Value")
-        self.remove_expenses_frame.remove_expenses_value_label.grid(row=5, column=4)
+        self.remove_expenses_frame.remove_expenses_value_label.grid(
+            row=5, column=4)
 
         # text input
         self.remove_expenses_frame.remove_expenses_name_input = Text(
             self.remove_expenses_frame, height=1, width=20)
-        self.remove_expenses_frame.remove_expenses_name_input.grid(row=4, column=5)
+        self.remove_expenses_frame.remove_expenses_name_input.grid(
+            row=4, column=5)
 
         self.remove_expenses_frame.remove_expenses_value_input = Text(
             self.remove_expenses_frame, height=1, width=20)
-        self.remove_expenses_frame.remove_expenses_value_input.grid(row=5, column=5)
+        self.remove_expenses_frame.remove_expenses_value_input.grid(
+            row=5, column=5)
 
         # submit data
         self.remove_new_expense_button = ttk.Button(
@@ -115,14 +121,16 @@ class expense_window(tk.Tk):
                 name = ttk.Label(self.expenses_table, text=f"{key}")
                 name.grid(row=row, column=0)
                 value = ttk.Label(self.expenses_table,
-                                text=f"{json_data[4][key]}")
+                                  text=f"{json_data[4][key]}")
                 value.grid(row=row, column=1)
                 row += 1
 
     def add_new_expense_EV(self) -> None:
         #name = self.add_expenses_name_input.get(1.0, tk.END+'-1c')
-        name = self.add_expenses_frame.add_expenses_name_input.get(1.0, tk.END+'-1c')
-        value = self.add_expenses_frame.add_expenses_value_input.get(1.0, tk.END+'-1c')
+        name = self.add_expenses_frame.add_expenses_name_input.get(
+            1.0, tk.END+'-1c')
+        value = self.add_expenses_frame.add_expenses_value_input.get(
+            1.0, tk.END+'-1c')
         print(f"EXPENSE NAME: {name}")
         print(f"EXPENSE VALUE: {value}")
 
@@ -130,8 +138,10 @@ class expense_window(tk.Tk):
         self.display_data()
 
     def remove_expense_EV(self) -> None:
-        name = self.remove_expenses_frame.remove_expenses_name_input.get(1.0, tk.END+'-1c')
-        value = self.remove_expenses_frame.remove_expenses_value_input.get(1.0, tk.END+'-1c')
+        name = self.remove_expenses_frame.remove_expenses_name_input.get(
+            1.0, tk.END+'-1c')
+        value = self.remove_expenses_frame.remove_expenses_value_input.get(
+            1.0, tk.END+'-1c')
 
         dh.remove_data(self.time_data[3], "expenses", name, value)
         self.display_data()
