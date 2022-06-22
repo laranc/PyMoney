@@ -15,11 +15,6 @@ def create_datafile(year: str) -> None:
     except:
         print("Couldnt make file!")
 
-
-def new_data_entry():
-    pass
-
-
 def pull_data(year: str) -> list[str]:
     if os.stat(f"./json/{year}.json").st_size == 0: # if no file exists
         return []
@@ -68,50 +63,34 @@ def push_data(json_file_name: str, data_type: str, data_name: str, data_value: s
         json_data_dict["incomes"][data_name] = data_value
 
     print(f"DICT = {json_data_dict}")
-    #json.dumps(json_data_dict, sort_keys=True, indent=4, separators=(',', ': '))
-    json.dump(json_data_dict, data_file)
+    #json.dumps(json_data_dict, sort_keys=True, indent=4, separators=(',', ': ')) # doesnt quite work
+    print(json.dumps(json_data_dict, indent=1))
+    data_file.write(json.dumps(json_data_dict, indent=1)) # format json data
+    #json.dump(json_dict_formatted, data_file)
     # print(json.load(data_file))
 
 
 def remove_data(json_file_name: str, data_type: str, data_name: str, data_value: str) -> None:
     data_file = open(f"./json/{json_file_name}.json", 'r+')
-    json_data_raw = json.load(data_file)
+    json_data = pull_data(json_file_name)
     data_file.truncate(0)
-    json_data = []
-    for entry in json_data_raw:
-        if entry != json_data_raw[data_type][data_name][data_value]:
-            json_data.append(entry)
-        else:
-            continue
-    pass
+    json_data_dict = {}
+    json_data_dict["month"] = json_data[0] # WATCH CASTING
+    json_data_dict["user-id"] = json_data[1]
+    json_data_dict["total-monthly-expenses"] = json_data[2]
+    json_data_dict["total-monthly-income"] = json_data[3]
+    json_data_dict["expenses"] = json_data[4]
+    json_data_dict["incomes"] = json_data[5]
+
+    if data_type == "expenses":
+        del json_data_dict["expenses"][data_name]
+    else:
+        del json_data_dict["incomes"][data_name]
+
+    print(f"DICT = {json_data_dict}")
+    json.dump(json_data_dict, data_file)
 
 
-def push_new_data(time_data: list[str]) -> None:
-    # create db connection
-    conn = db.connect_to_database("user_data.db")
-    cursor = db.create_database_cursor(conn)
-
-    # get database data
-    cursor.execute("SELECT * FROM UserData")
-    db_data = cursor.fetchall()
-
-    # collect time data
-
-    json_expenses = []
-    json_incomes = []
-
-    # essentially the schmatic for what will be reresented in the json
-    # i.e :
-
-    # {
-
-    # construct dictionary
-    json_entry = {  # need to add expense data here?
-        "userid": f"",
-        "totalmonthexpenses": f"",
-        "totalmonthincome": f"",
-        "expenses": f"{json_expenses}",  # this wont push as expected!!!
-        "incomes": f"{json_incomes}",
-    }
-
-    # }
+def verify_month(json_file_name: str):
+    json_data = pull_data(json_file_name)
+    curr_month = int(json_data)

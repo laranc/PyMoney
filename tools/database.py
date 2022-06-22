@@ -18,7 +18,6 @@ def create_database():
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS UserData
         (firstname TEXT, lastname TEXT, age INT, dateofbirth TEXT, password TEXT) 
-
     ''')
 
     # commit to db
@@ -48,3 +47,11 @@ def disconnect_from_database(conn: sql.Connection, cursor: sql.Cursor):
         conn.close()
     except:
         print("ERR FAILED TO CLOSE CURSOR AND CONNECTION")
+
+def get_database_data(cursor) -> list:
+        try:
+            cursor.execute("SELECT * FROM UserData")
+            db_data = cursor.fetchall()
+            return db_data
+        except:
+            raise eh.database_query_failed()
