@@ -2,12 +2,13 @@
 # imports
 # tkinter
 import tkinter as tk
-from tkinter import ttk, Tk
+from tkinter import ttk
+from tkinter import Tk
 
 # windows
 import core.expensewindow as expwin
 import core.incomewindow as incwin
-import core.loginwindow as logwin
+import loginwindow as logwin
 import core.registerwindow as regwin
 import core.calculatorwindow as clcwin
 
@@ -25,11 +26,6 @@ import time
 class main_window(tk.Tk):
     def __init__(self) -> None:
         super().__init__()
-        # db constants
-        global conn
-        global cursor
-        global db_data
-
         # time data
         global time_raw
         global time_data
@@ -39,27 +35,9 @@ class main_window(tk.Tk):
 
         ### DEBUG ###
         #self.purge_database(self.conn, self.cursor)
-
-        # HUGE PROBLEM #
-        ## THIS MUST BE FIXED ##
-        # connect to db
-        conn = db.connect_to_database()  # create database
-        print(conn)
-        cursor = db.create_database_cursor(conn)
-        print(cursor)
-
-        # # verify database
-        # self.verify_database()
-        # get database data
-        db_data = db.get_database_data(cursor)
-        # verify database data
-        if not db_data:
-            self.create_new_user()  # delay mainwindow creation as much as possible!!!
-        else:
-            self.login_user()
-
+        
         # get user id
-        user_id = u.current_user_id
+        user_id = u.get_user_id()
 
         self.title("PyMoney")
         self.geometry("800x600")
@@ -112,9 +90,6 @@ class main_window(tk.Tk):
             self, text="Exit", command=lambda: self.destroy())
         self.exit_button.grid(row=7, column=4)
 
-        ### free resources ###
-        db.disconnect_from_database(conn, cursor)
-
     ### DEBUG ###
     def purge_database(self, conn, cursor) -> None:
         cursor.execute("""
@@ -145,9 +120,9 @@ class main_window(tk.Tk):
             time_data, time_raw, user_id)
 
 
-if __name__ == '__main__':
-    app = main_window()
-    app.mainloop()
+# if __name__ == '__main__':
+#     app = main_window()
+#     app.mainloop()
 
 
 #### OLD FUNCTIONS ####

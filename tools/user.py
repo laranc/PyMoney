@@ -12,5 +12,7 @@ class User():
     dateofbirth: str
     password: str
 
+global current_user_id
 
-current_user_id: int
+def get_user_id():
+    return current_user_id

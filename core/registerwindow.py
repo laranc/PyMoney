@@ -9,6 +9,8 @@ from tkinter import messagebox
 import tools.database as db
 import tools.user as u
 
+import core.mainwindow as maiwin
+
 
 class register_window(tk.Tk):
     def __init__(self) -> None:
@@ -109,18 +111,17 @@ class register_window(tk.Tk):
         if not db_data:
             u.current_user_id = 0
         else:
-            for i in db_data:
-                if i[1] == user_firstname:
-                    u.current_user_id = i[0]
+            u.current_user_id = len(db_data) - 1
 
         user = u.User(u.current_user_id, user_firstname, user_lastname, user_age,
                       user_dateofbirth, user_password)
 
-        # add data to database
+        # add data to database # NEEDS FIXING
         cursor.execute(f"""
-            INSERT INTO UserData(id, firstname, lastname, age, dateofbirth, password)
-            VALUES('{user.firstname}', '{user.lastname}', {user.age}, '{user.dateofbirth}', '{user.password}')
+            INSERT OR IGNORE INTO UserData(id, firstname, lastname, age, dateofbirth, password)
+            VALUES('{u.current_user_id}', '{user.firstname}', '{user.lastname}', {user.age}, '{user.dateofbirth}', '{user.password}')
         """)
+
         conn.commit()
 
         ### DEBUG ###

@@ -6,6 +6,10 @@ from tkinter import Text
 from tkinter import Entry
 from tkinter import messagebox
 
+# windows
+import core.registerwindow as regwin
+import core.mainwindow as maiwin
+
 import tools.database as db
 import tools.user as u
 
@@ -13,13 +17,32 @@ import tools.user as u
 class login_window(tk.Tk):
     def __init__(self) -> None:
         super().__init__()
+        # database constants
+        global conn
+        global cursor
+        global db_data
+
+        # connect to db
+        conn = db.connect_to_database()  # create database
+        print(conn)
+        cursor = db.create_database_cursor(conn)
+        print(cursor)
+
+        # # verify database
+        # self.verify_database()
+        # get database data
+        db_data = db.get_database_data(cursor)
+        # verify database data
+        if not db_data:
+            self.register_user_EV()  # delay mainwindow creation as much as possible!!!
+        else:
+            pass
+
+
         # set initial data
         self.title("Login Window")
         self.geometry("500x600")
-
-        # set initial data
-        self.title("Register Window")
-        self.geometry("500x600")  # adjust these sizes!!!
+        self.resizable(False, False)
 
         # title label
         self.title_label = ttk.Label(self, text="Welcome Back Existing User!")
@@ -55,11 +78,13 @@ class login_window(tk.Tk):
         self.password_text_widget.grid(row=6, column=4)
 
         # submit button
-        self.submit_new_user_button = ttk.Button(
+        self.submit_user_button = ttk.Button(
             self, text="SUBMIT", command=self.validate_user_login_EV)
+        self.submit_user_button.grid(row=7, column=3)
 
-        # place button
-        self.submit_new_user_button.grid(row=7, column=3)
+
+        self.register_new_user_button = ttk.Button(self, text="Register New User", command=self.register_user_EV)
+        self.register_new_user_button.grid(row=8, column=3)
 
     def validate_user_login_EV(self):
         conn = db.connect_to_database()
@@ -88,13 +113,23 @@ class login_window(tk.Tk):
                 messagebox.showinfo(title="Login Successfull",
                                     message="Login Successfull")
                 login_check = True
-                break
+                
+        if not login_check:
+            messagebox.showerror(title="Login Failed", message="Invalid credentials")
 
-            if not(login_check):
-                messagebox.showerror(title="Login Failed",
-                                     message="Invalid credential")
+        else:
             # free db resources
             db.disconnect_from_database(conn, cursor)
+            # open main window
+            self.mainwindow = maiwin.main_window()
+            self.destroy() # close login window
 
-            # close window
-            self.destroy()
+                                   
+                                     
+    def register_user_EV(self):
+        self.register_window = regwin.register_window()
+
+
+if __name__ == '__main__':
+    app = login_window()
+    app.mainloop()
