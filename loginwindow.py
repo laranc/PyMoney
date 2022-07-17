@@ -38,7 +38,6 @@ class login_window(tk.Tk):
         else:
             pass
 
-
         # set initial data
         self.title("Login Window")
         self.geometry("500x600")
@@ -82,8 +81,8 @@ class login_window(tk.Tk):
             self, text="SUBMIT", command=self.validate_user_login_EV)
         self.submit_user_button.grid(row=7, column=3)
 
-
-        self.register_new_user_button = ttk.Button(self, text="Register New User", command=self.register_user_EV)
+        self.register_new_user_button = ttk.Button(
+            self, text="Register New User", command=self.register_user_EV)
         self.register_new_user_button.grid(row=8, column=3)
 
     def validate_user_login_EV(self):
@@ -109,23 +108,22 @@ class login_window(tk.Tk):
         # check user against database
         for i in db_data:
             if i[1] == in_user_firstname and i[2] == in_user_lastname and i[3] == in_user_age and i[4] == in_user_dateofbirth and i[5] == in_user_password:
-                u.current_user_id = i[0]
+                u.set_user_id(i[0])
                 messagebox.showinfo(title="Login Successfull",
                                     message="Login Successfull")
                 login_check = True
-                
+
         if not login_check:
-            messagebox.showerror(title="Login Failed", message="Invalid credentials")
+            messagebox.showerror(title="Login Failed",
+                                 message="Invalid credentials")
 
         else:
             # free db resources
             db.disconnect_from_database(conn, cursor)
             # open main window
             self.mainwindow = maiwin.main_window()
-            self.destroy() # close login window
+            self.destroy()  # close login window
 
-                                   
-                                     
     def register_user_EV(self):
         self.register_window = regwin.register_window()
 

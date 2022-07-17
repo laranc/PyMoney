@@ -109,17 +109,17 @@ class register_window(tk.Tk):
         user_password = self.password_text_widget.get()  # password specific
 
         if not db_data:
-            u.current_user_id = 0
+            u.set_user_id(0)
         else:
-            u.current_user_id = len(db_data) - 1
+            u.set_user_id(len(db_data) - 1)
 
-        user = u.User(u.current_user_id, user_firstname, user_lastname, user_age,
+        user = u.User(u.get_user_id(), user_firstname, user_lastname, user_age,
                       user_dateofbirth, user_password)
 
         # add data to database # NEEDS FIXING
         cursor.execute(f"""
             INSERT OR IGNORE INTO UserData(id, firstname, lastname, age, dateofbirth, password)
-            VALUES('{u.current_user_id}', '{user.firstname}', '{user.lastname}', {user.age}, '{user.dateofbirth}', '{user.password}')
+            VALUES('{u.get_user_id()}', '{user.firstname}', '{user.lastname}', {user.age}, '{user.dateofbirth}', '{user.password}')
         """)
 
         conn.commit()

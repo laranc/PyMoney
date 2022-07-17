@@ -35,7 +35,7 @@ class main_window(tk.Tk):
 
         ### DEBUG ###
         #self.purge_database(self.conn, self.cursor)
-        
+
         # get user id
         user_id = u.get_user_id()
 
@@ -62,15 +62,11 @@ class main_window(tk.Tk):
         year = time_data[3]
 
         # look for json file
-        if not os.path.exists(f"./json/{year}.json"):
-            print("data file not present! creating new one!")
-            dh.create_datafile(year)  # by which case we need to push new data
+        if os.path.exists(f"./json/{year}.json"):
+            print("data validated!")
         else:
-            print("data validated!")  # by which case we need to pull the data
-
-        print(time_data)
-
-        # get user id
+            print("data file not present! creating new one!")
+            dh.create_datafile(year, month, u.get_user_id())
 
         # window buttons
         self.expense_window_button = ttk.Button(

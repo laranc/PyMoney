@@ -134,7 +134,8 @@ class expense_window(tk.Tk):
         print(f"EXPENSE NAME: {name}")
         print(f"EXPENSE VALUE: {value}")
 
-        dh.push_data(self.time_data[3], "expenses", name, value)
+        dh.push_data(self.time_data[3],
+                     self.time_data[2], "expenses", name, value)
         self.display_data()
 
     def remove_expense_EV(self) -> None:
