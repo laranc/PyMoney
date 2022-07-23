@@ -1,0 +1,14 @@
+[
+    {
+        "user-id": "0",
+        "month": "Jul",
+        "total-monthly-expenses": "",
+        "total-monthly-income": "",
+        "expenses": {
+            "food": "100"
+        },
+        "incomes": {
+            "salary": "300"
+        }
+    }
+]

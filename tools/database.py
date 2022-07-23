@@ -3,7 +3,7 @@ import sqlite3 as sql
 import tools.errorhandler as eh
 
 
-def create_database():
+def create_database() -> None:
     # init connection
     try:
         conn = sql.connect("user_data.sqlite")
@@ -46,7 +46,7 @@ def create_database_cursor(conn: sql.Connection) -> sql.Cursor:
         print("ERR FAILED TO CREATE CURSOR")
 
 
-def disconnect_from_database(conn: sql.Connection, cursor: sql.Cursor):
+def disconnect_from_database(conn: sql.Connection, cursor: sql.Cursor) -> None:
     try:
         cursor.close()
         conn.close()
@@ -62,3 +62,12 @@ def get_database_data(cursor) -> list:
         return db_data
     except:
         raise eh.database_query_failed()
+
+
+def purge_database(conn: sql.Connection, cursor: sql.Cursor) -> None:
+    try:
+        cursor.execute("DELETE FROM UserData")
+        conn.commit()
+        print("Database Purged")
+    except:
+        print("ERR FAILED TO PURGE DATABASE")

@@ -1,10 +1,6 @@
 # registerwindow.py
 import tkinter as tk
-from tkinter import Tk
-from tkinter import ttk
-from tkinter import Text
-from tkinter import Entry
-from tkinter import messagebox
+from tkinter import Tk, ttk, Text, Entry, messagebox
 
 import tools.database as db
 import tools.user as u

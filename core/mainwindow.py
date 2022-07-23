@@ -2,8 +2,7 @@
 # imports
 # tkinter
 import tkinter as tk
-from tkinter import ttk
-from tkinter import Tk
+from tkinter import ttk, Tk
 
 # windows
 import core.expensewindow as expwin
@@ -27,17 +26,17 @@ class main_window(tk.Tk):
     def __init__(self) -> None:
         super().__init__()
         # time data
-        global time_raw
-        global time_data
-
-        # user
-        global user_id
-
-        ### DEBUG ###
-        #self.purge_database(self.conn, self.cursor)
+        self.time_raw = time.strftime(
+            "%a, %d %b %Y", time.localtime(time.time()))
+        self.time_data = self.time_raw.split()
+        # time data split:
+        # day ==> 0
+        # date ==> 1
+        # month ==> 2
+        # year ==> 3
 
         # get user id
-        user_id = u.get_user_id()
+        self.user_id = u.get_user_id()
 
         self.title("PyMoney")
         self.geometry("800x600")
@@ -47,26 +46,16 @@ class main_window(tk.Tk):
         self.title_label.grid(row=0, column=4)
 
         # time label
-        # get current time
-        time_raw = time.strftime(
-            "%a, %d %b %Y", time.localtime(time.time()))
         self.datetime_label = ttk.Label(
-            self, text="" + time_raw)
+            self, text="" + self.time_raw)
         self.datetime_label.grid(row=0, column=5)
 
-        # run time configuration
-        time_data = time_raw.split()
-        day = time_data[0]
-        date = time_data[1]
-        month = time_data[2]
-        year = time_data[3]
-
         # look for json file
-        if os.path.exists(f"./json/{year}.json"):
+        if os.path.exists(f"./json/{self.time_data[3]}.json"):
             print("data validated!")
         else:
             print("data file not present! creating new one!")
-            dh.create_datafile(year, month, u.get_user_id())
+            dh.data_init(self.time_data[3], self.time_data[2], u.get_user_id())
 
         # window buttons
         self.expense_window_button = ttk.Button(
@@ -86,34 +75,18 @@ class main_window(tk.Tk):
             self, text="Exit", command=lambda: self.destroy())
         self.exit_button.grid(row=7, column=4)
 
-    ### DEBUG ###
-    def purge_database(self, conn, cursor) -> None:
-        cursor.execute("""
-            DELETE FROM UserData;
-        """)
-        conn.commit()
-        print("DEBUG:: Database Purged!!")
-
-    # user creation
-    def create_new_user(self):
-        self.register_window = regwin.register_window()  # window execution
-
-    # user login
-    def login_user(self):
-        self.login_window = logwin.login_window()
-
     # event functions
     def open_expense_window_EV(self) -> None:
         self.expense_window = expwin.expense_window(
-            time_data, time_raw, user_id)
+            self.time_data, self.time_raw, self.user_id)
 
     def open_income_window_EV(self) -> None:
         self.income_window = incwin.income_window(
-            time_data, time_raw, user_id)
+            self.time_data, self.time_raw, self.user_id)
 
     def open_calculator_window_EV(self) -> None:
         self.calculator_window_button = clcwin.calculator_window(
-            time_data, time_raw, user_id)
+            self.time_data, self.time_raw, self.user_id)
 
 
 # if __name__ == '__main__':

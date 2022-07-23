@@ -1,4 +1,5 @@
 # savingswindow.py
+import json
 import tkinter as tk
 from tkinter import ttk, Tk, Text, PhotoImage
 
@@ -7,7 +8,7 @@ import tools.datahandler as dh
 
 
 class income_window(tk.Tk):
-    def __init__(self, time_data: list[str], time_raw: str, user_id: int) -> None:
+    def __init__(self, time_data: str, time_raw: str, user_id: int) -> None:
         super().__init__()
         # get user id
         self.user_id = user_id
@@ -27,7 +28,7 @@ class income_window(tk.Tk):
 
         # title label
         self.title_label = ttk.Label(
-            self, text="Income for " + time_raw)
+            self, text="Income for " + self.time_raw)
         self.title_label.grid(row=0, column=4)
 
         # table frame
@@ -104,7 +105,9 @@ class income_window(tk.Tk):
 
     def display_data(self) -> None:
         # get json data
-        json_data: list[str] = dh.pull_data(self.time_data[3])
+        json_data, json_obj = dh.pull_data(
+            self.time_data[3], self.time_data[2])
+        del(json_obj)
         print(f"DATA = {json_data}")
         if len(json_data) == 0:  # file empty
             pass
@@ -114,6 +117,7 @@ class income_window(tk.Tk):
                 master=self, relief=tk.SOLID, borderwidth=2)
             self.income_table.grid(row=6, column=1)
             row = 1
+            print(f"JSON DATA {json_data}")
             for key in json_data[5]:
                 name = ttk.Label(self.income_table, text=f"{key}")
                 name.grid(row=row, column=0)
@@ -128,7 +132,8 @@ class income_window(tk.Tk):
         value = self.add_income_frame.add_income_value_input.get(
             1.0, tk.END+'-1c')
 
-        dh.push_data(self.time_data[3], "incomes", name, value)
+        dh.push_data(self.time_data[3],
+                     self.time_data[2], "incomes", name, value)
         self.display_data()
 
     def remove_income_EV(self) -> None:
