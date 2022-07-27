@@ -5,11 +5,8 @@ import tools.datahandler as dh
 
 
 class calculator_window(tk.Tk):
-    def __init__(self, time_data: str, time_raw: str, user_id: int) -> None:
+    def __init__(self, time_data: str, time_raw: str) -> None:
         super().__init__()
-        # get user id
-        self.user_id = user_id
-
         # get time
         self.time_data = time_data
         self.time_raw = time_raw
@@ -84,8 +81,8 @@ class calculator_window(tk.Tk):
     def total_income_calculation(self) -> str:
         value: int
         total = 0
-        for key in self.json_data[5]:  # get income from dictionary
-            value = int(self.json_data[5][key])  # pills here
+        for key in self.json_data[2]:  # get income from dictionary
+            value = int(self.json_data[2][key])  # pills here
             total += value
 
         return str(total)
@@ -93,8 +90,8 @@ class calculator_window(tk.Tk):
     def total_expenses_calculation(self) -> str:
         value: int
         total = 0
-        for key in self.json_data[4]:
-            value = int(self.json_data[4][key])
+        for key in self.json_data[1]:
+            value = int(self.json_data[1][key])
             total += value
 
         return str(total)
@@ -137,8 +134,8 @@ class calculator_window(tk.Tk):
         else:
             value: int
             total = 0
-            for key in json_data_prev[5]:
-                value = int(json_data_prev[5][key])
+            for key in json_data_prev[2]:
+                value = int(json_data_prev[2][key])
                 total += value
             return str(total)
 
@@ -151,8 +148,8 @@ class calculator_window(tk.Tk):
         else:
             value: int
             total = 0
-            for key in json_data_prev[4]:
-                value = int(json_data_prev[4][key])
+            for key in json_data_prev[1]:
+                value = int(json_data_prev[1][key])
                 total += value
             return str(total)
 
@@ -167,8 +164,8 @@ class calculator_window(tk.Tk):
             if len(json_data) == 0:
                 break
 
-            for key in json_data[5]:
-                value = int(json_data[5][key])
+            for key in json_data[2]:
+                value = int(json_data[2][key])
                 total += value
 
             count += 1
@@ -199,8 +196,8 @@ class calculator_window(tk.Tk):
             if len(json_data) == 0:
                 break
 
-            for key in json_data[4]:
-                value = int(json_data[5][key])
+            for key in json_data[1]:
+                value = int(json_data[1][key])
                 total += value
 
             count += 1

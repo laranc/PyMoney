@@ -118,11 +118,11 @@ class income_window(tk.Tk):
             self.income_table.grid(row=6, column=1)
             row = 1
             print(f"JSON DATA {json_data}")
-            for key in json_data[5]:
+            for key in json_data[2]:
                 name = ttk.Label(self.income_table, text=f"{key}")
                 name.grid(row=row, column=0)
                 value = ttk.Label(self.income_table,
-                                  text=f"{json_data[5][key]}")
+                                  text=f"{json_data[2][key]}")
                 value.grid(row=row, column=1)
                 row += 1
 
@@ -142,5 +142,6 @@ class income_window(tk.Tk):
         value = self.remove_income_frame.remove_income_value_input.get(
             1.0, tk.END+'-1c')
 
-        dh.remove_data(self.time_data[3], "incomes", name, value)
+        dh.remove_data(self.time_data[3],
+                       self.time_data[2], "incomes", name, value)
         self.display_data()

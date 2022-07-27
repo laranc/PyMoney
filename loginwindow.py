@@ -36,7 +36,7 @@ class login_window(tk.Tk):
 
         # set initial data
         self.title("Login Window")
-        self.geometry("500x600")
+        self.geometry("500x200")
         self.resizable(False, False)
 
         # title label
@@ -50,11 +50,6 @@ class login_window(tk.Tk):
         self.lastname_label = ttk.Label(self, text="Lastname:")
         self.lastname_label.grid(row=3, column=3)
 
-        #self.age_label = ttk.Label(self, text="Age:")
-        #self.age_label.grid(row=4, column=3)
-        #self.dateofbirth_label = ttk.Label(self, text="Date of Birth:")
-        #self.dateofbirth_label.grid(row=5, column=3)
-
         self.password_label = ttk.Label(self, text="Password:")
         self.password_label.grid(row=6, column=3)
 
@@ -65,23 +60,20 @@ class login_window(tk.Tk):
         self.lastname_text_widget = Text(self, height=1, widt=20)
         self.lastname_text_widget.grid(row=3, column=4)
 
-        #self.age_text_widget = Text(self, height=1, width=20)
-        #self.age_text_widget.grid(row=4, column=4)
-        #self.dateofbirth_text_widget = Text(self, height=1, width=20)
-        #self.dateofbirth_text_widget.grid(row=5, column=4)
-
         # password field
         self.password_text_widget = Entry(self, show="*", width=20)
         self.password_text_widget.grid(row=6, column=4)
 
         # submit button
         self.submit_user_button = ttk.Button(
-            self, text="SUBMIT", command=self.validate_user_login_EV)
-        self.submit_user_button.grid(row=7, column=3)
+            self, text="Login", command=self.validate_user_login_EV)
+        self.submit_user_button.grid(row=7, column=4)
 
         self.register_new_user_button = ttk.Button(
             self, text="Register New User", command=self.register_user_EV)
-        self.register_new_user_button.grid(row=8, column=3)
+        self.register_new_user_button.grid(row=8, column=4)
+
+        print(f"LOGIN WINDOW GRID: {self.grid_size()}")
 
     def validate_user_login_EV(self):
         conn = db.connect_to_database()
@@ -105,7 +97,7 @@ class login_window(tk.Tk):
         # check user against database
         for i in db_data:
             if i[1] == in_user_firstname and i[2] == in_user_lastname and i[5] == in_user_password:
-                u.set_user_id(i[0])
+                u.set_user_details(i[0], i[1], i[2], i[3], i[4], i[5])
                 messagebox.showinfo(title="Login Successfull",
                                     message="Login Successfull")
                 login_check = True
@@ -117,8 +109,7 @@ class login_window(tk.Tk):
         else:
             # free db resources
             db.disconnect_from_database(conn, cursor)
-            # open main window
-            self.mainwindow = maiwin.main_window()
+            # open main windowmaiwin.main_window()
             self.destroy()  # close login window
 
     def register_user_EV(self):

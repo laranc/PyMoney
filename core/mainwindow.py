@@ -7,8 +7,6 @@ from tkinter import ttk, Tk
 # windows
 import core.expensewindow as expwin
 import core.incomewindow as incwin
-import loginwindow as logwin
-import core.registerwindow as regwin
 import core.calculatorwindow as clcwin
 
 import tools.database as db
@@ -29,33 +27,46 @@ class main_window(tk.Tk):
         self.time_raw = time.strftime(
             "%a, %d %b %Y", time.localtime(time.time()))
         self.time_data = self.time_raw.split()
-        # time data split:
+        # time data indices:
         # day ==> 0
         # date ==> 1
         # month ==> 2
         # year ==> 3
 
         # get user id
-        self.user_id = u.get_user_id()
+        self.user_details = u.get_user_details()
+
+        self.json_data, self.json_obj = dh.pull_data(
+            self.time_data[3], self.time_data[2])
 
         self.title("PyMoney")
         self.geometry("800x600")
 
         # title label
-        self.title_label = ttk.Label(self, text="PyMoney")
-        self.title_label.grid(row=0, column=4)
+        self.title_label = ttk.Label(
+            self, text=f"{self.user_details[1]} {self.user_details[2]}")
+        self.title_label.grid(row=0, column=0)
 
         # time label
         self.datetime_label = ttk.Label(
-            self, text="" + self.time_raw)
-        self.datetime_label.grid(row=0, column=5)
+            self, text=f"{self.time_raw}")
+        self.datetime_label.grid(row=1, column=0)
 
         # look for json file
-        if os.path.exists(f"./json/{self.time_data[3]}.json"):
+        if os.path.exists(f"./json/{self.user_details[0]}.json"):
             print("data validated!")
         else:
             print("data file not present! creating new one!")
-            dh.data_init(self.time_data[3], self.time_data[2], u.get_user_id())
+            dh.data_init(self.time_data[3], self.time_data[2])
+
+        # information labels
+        self.current_balance_label = ttk.Label(
+            self, text=f"Current Balance: {self.current_balance_calc()}")
+        self.current_balance_label.grid(row=0, column=1)
+
+        self.current_expenses_label = ttk.Label(
+            self, text=f"Current monthly expenses: {self.current_expenses_calc()}")
+        self.current_expenses_label.grid(row=1, column=1)
 
         # window buttons
         self.expense_window_button = ttk.Button(
@@ -75,18 +86,45 @@ class main_window(tk.Tk):
             self, text="Exit", command=lambda: self.destroy())
         self.exit_button.grid(row=7, column=4)
 
+        print(f"MAIN WINDOW GRID: {self.grid_size()}")
+
+    # label functions
+    def current_balance_calc(self) -> str:
+        income_value: int
+        income_total = 0
+        for key in self.json_data[2]:
+            income_value = int(self.json_data[2][key])
+            income_total += income_value
+
+        expense_value: int
+        expense_total = 0
+        for key in self.json_data[1]:
+            expense_value = int(self.json_data[1][key])
+            expense_total += expense_value
+
+        return str(int(income_total) - int(income_total))
+
+    def current_expenses_calc(self) -> str:
+        value: int
+        total = 0
+        for key in self.json_data[1]:
+            value = int(self.json_data[1][key])
+            total += value
+
+        return str(value)
+
     # event functions
     def open_expense_window_EV(self) -> None:
         self.expense_window = expwin.expense_window(
-            self.time_data, self.time_raw, self.user_id)
+            self.time_data, self.time_raw)
 
     def open_income_window_EV(self) -> None:
         self.income_window = incwin.income_window(
-            self.time_data, self.time_raw, self.user_id)
+            self.time_data, self.time_raw)
 
     def open_calculator_window_EV(self) -> None:
         self.calculator_window_button = clcwin.calculator_window(
-            self.time_data, self.time_raw, self.user_id)
+            self.time_data, self.time_raw)
 
 
 # if __name__ == '__main__':

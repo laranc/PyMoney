@@ -7,11 +7,8 @@ import tools.datahandler as dh
 
 
 class expense_window(tk.Tk):
-    def __init__(self, time_data: str, time_raw: str, user_id: int) -> None:
+    def __init__(self, time_data: str, time_raw: str) -> None:
         super().__init__()
-        # get user id
-        self.user_id = user_id
-
         # get time
         self.time_data = time_data
         self.time_raw = time_raw
@@ -119,11 +116,11 @@ class expense_window(tk.Tk):
             self.expenses_table.grid(row=6, column=1)
             row = 1
             print(f"JSON DATA: {json_data}")
-            for key in json_data[4]:
+            for key in json_data[1]:
                 name = ttk.Label(self.expenses_table, text=f"{key}")
                 name.grid(row=row, column=0)
                 value = ttk.Label(self.expenses_table,
-                                  text=f"{json_data[4][key]}")
+                                  text=f"{json_data[1][key]}")
                 value.grid(row=row, column=1)
                 row += 1
 
@@ -146,5 +143,6 @@ class expense_window(tk.Tk):
         value = self.remove_expenses_frame.remove_expenses_value_input.get(
             1.0, tk.END+'-1c')
 
-        dh.remove_data(self.time_data[3], "expenses", name, value)
+        dh.remove_data(
+            self.time_data[3], self.time_data[2], "expenses", name, value)
         self.display_data()

@@ -13,17 +13,22 @@ class User():
     password: str
 
 
-current_user_id: int
+current_user = User
 
 
-def set_user_id(user_id: int) -> None:
-    global current_user_id
-    current_user_id = user_id
+def set_user_details(id: int, first_name: str, last_name: str, age: int, dateofbirth: str,  password: str) -> None:
+    global current_user
+    current_user.id = id
+    current_user.firstname = first_name
+    current_user.lastname = last_name
+    current_user.age = age
+    current_user.dateofbirth = dateofbirth
+    current_user.password = password
 
 
-def get_user_id() -> int:
-    global current_user_id
+def get_user_details() -> list:
+    global current_user
     try:
-        return current_user_id
+        return [current_user.id, current_user.firstname, current_user.lastname, current_user.age, current_user.dateofbirth, current_user.password]
     except NameError:
-        print("Current User ID undefined")
+        print("Current user details undefined: Error in login process")
