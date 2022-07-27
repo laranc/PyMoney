@@ -35,7 +35,7 @@ class calculator_window(tk.Tk):
         # self.iconphoto(False, self.win_icon)
 
         # set initial data
-        self.title("Calculator Window")
+        self.title("PyMoney --> Calculator Window")
         self.geometry("600x500")
 
         # title label

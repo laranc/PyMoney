@@ -2,7 +2,7 @@
 # imports
 # tkinter
 import tkinter as tk
-from tkinter import ttk, Tk
+from tkinter import ttk, Tk, PhotoImage
 
 # windows
 import core.expensewindow as expwin
@@ -18,6 +18,7 @@ import tools.user as u
 import sqlite3 as sql
 import os.path
 import time
+import os
 
 
 class main_window(tk.Tk):
@@ -39,18 +40,33 @@ class main_window(tk.Tk):
         self.json_data, self.json_obj = dh.pull_data(
             self.time_data[3], self.time_data[2])
 
-        self.title("PyMoney")
-        self.geometry("800x600")
+        self.title("PyMoney --> Main Interface")
+        self.geometry("600x300")
 
-        # title label
+        # set icon
+        # working_dir = os.path.dirname(__file__)
+        # print(f"WORKING DIR: {working_dir}")
+        # self.iconphoto(False, PhotoImage(file="../icons/main.png")) WHY. DOESNT. THIS. WORK.
+
+        # title labels
         self.title_label = ttk.Label(
-            self, text=f"{self.user_details[1]} {self.user_details[2]}")
+            self, text=f"PyMoney Main Interface",
+            font=("Roman 30 bold")
+        )
         self.title_label.grid(row=0, column=0)
+
+        self.user_label = ttk.Label(
+            self, text=f" Logged In As: {self.user_details[1]} {self.user_details[2]}",
+            font=("Roman 20 bold")
+        )
+        self.user_label.grid(row=1, column=0)
 
         # time label
         self.datetime_label = ttk.Label(
-            self, text=f"{self.time_raw}")
-        self.datetime_label.grid(row=1, column=0)
+            self, text=f"Current Time: {self.time_raw}",
+            font=("Roman 20 bold")
+        )
+        self.datetime_label.grid(row=2, column=0)
 
         # look for json file
         if os.path.exists(f"./json/{self.user_details[0]}.json"):
@@ -61,30 +77,42 @@ class main_window(tk.Tk):
 
         # information labels
         self.current_balance_label = ttk.Label(
-            self, text=f"Current Balance: {self.current_balance_calc()}")
-        self.current_balance_label.grid(row=0, column=1)
+            self, text=f"Current Balance: {self.current_balance_calc()}",
+            font=("Roman 20 bold")
+        )
+        self.current_balance_label.grid(row=3, column=0)
 
         self.current_expenses_label = ttk.Label(
-            self, text=f"Current monthly expenses: {self.current_expenses_calc()}")
-        self.current_expenses_label.grid(row=1, column=1)
+            self, text=f"Current monthly expenses: {self.current_expenses_calc()}",
+            font=("Roman 20 bold")
+        )
+        self.current_expenses_label.grid(row=4, column=0)
 
         # window buttons
         self.expense_window_button = ttk.Button(
-            self, text="Expenses", command=self.open_expense_window_EV)
-        self.expense_window_button.grid(row=4, column=4)  # padx()
+            self, text="Expenses", command=self.open_expense_window_EV,
+            width=20
+        )
+        self.expense_window_button.grid(row=5, column=0)  # padx()
 
         self.income_window_button = ttk.Button(
-            self, text="Income", command=self.open_income_window_EV)
-        self.income_window_button.grid(row=5, column=4)
+            self, text="Income", command=self.open_income_window_EV,
+            width=20
+        )
+        self.income_window_button.grid(row=6, column=0)
 
         self.calculator_window_button = ttk.Button(
-            self, text="Calculator", command=self.open_calculator_window_EV)
-        self.calculator_window_button.grid(row=6, column=4)
+            self, text="Calculator", command=self.open_calculator_window_EV,
+            width=20
+        )
+        self.calculator_window_button.grid(row=7, column=0)
 
         # exit button
         self.exit_button = ttk.Button(
-            self, text="Exit", command=lambda: self.destroy())
-        self.exit_button.grid(row=7, column=4)
+            self, text="Exit", command=lambda: self.destroy(),
+            width=20
+        )
+        self.exit_button.grid(row=8, column=0)
 
         print(f"MAIN WINDOW GRID: {self.grid_size()}")
 

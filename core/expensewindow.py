@@ -19,7 +19,7 @@ class expense_window(tk.Tk):
         # self.iconphoto(False, self.win_icon)
 
         # set initial data
-        self.title("Expense Window")
+        self.title("PyMoney --> Expense Window")
         self.geometry("500x600")
 
         # title label

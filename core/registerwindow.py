@@ -12,7 +12,7 @@ class register_window(tk.Tk):
     def __init__(self) -> None:
         super().__init__()
         # set initial data
-        self.title("Register Window")
+        self.title("PyMoney --> Register Window")
         self.geometry("500x600")  # adjust these sizes!!!
 
         # title label

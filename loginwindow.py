@@ -1,6 +1,6 @@
 # loginwindow.py
 import tkinter as tk
-from tkinter import Tk, ttk, Text, Entry, messagebox
+from tkinter import Tk, ttk, Text, Entry, messagebox, PhotoImage
 
 # windows
 import core.registerwindow as regwin
@@ -35,9 +35,14 @@ class login_window(tk.Tk):
             pass
 
         # set initial data
-        self.title("Login Window")
+        self.title("PyMoney --> Login Window")
         self.geometry("500x200")
         self.resizable(False, False)
+
+        # set icon
+        self.iconphoto(False, PhotoImage(file="icons/login.png")) # window icon display in taskbar
+        #self.configure(background="black") # for super dark mode users :)
+
 
         # title label
         self.title_label = ttk.Label(self, text="Welcome Back Existing User!")
@@ -109,7 +114,7 @@ class login_window(tk.Tk):
         else:
             # free db resources
             db.disconnect_from_database(conn, cursor)
-            # open main windowmaiwin.main_window()
+            self.main_window = maiwin.main_window()
             self.destroy()  # close login window
 
     def register_user_EV(self):

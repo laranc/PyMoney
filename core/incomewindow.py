@@ -23,7 +23,7 @@ class income_window(tk.Tk):
         # self.iconphoto(False, self.win_icon)
 
         # set initial data
-        self.title("Income Window")
+        self.title("PyMoney --> Income Window")
         self.geometry("500x600")
 
         # title label
