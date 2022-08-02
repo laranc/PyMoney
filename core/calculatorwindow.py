@@ -1,7 +1,6 @@
+import tools.datahandler as dh
 import tkinter as tk
 from tkinter import ttk, Tk, Text, PhotoImage
-
-import tools.datahandler as dh
 
 
 class calculator_window(tk.Tk):
@@ -36,69 +35,101 @@ class calculator_window(tk.Tk):
 
         # set initial data
         self.title("PyMoney --> Calculator Window")
-        self.geometry("600x500")
+        self.geometry("550x300")
+        #self.iconphoto(False, PhotoImage(file="../icons/main.png"))
 
         # title label
+
         self.title_label = ttk.Label(
-            self, text="Total Savings for" + self.time_raw)
-        self.title_label.grid(row=0, column=4)
+            self, text="PyMoney Calculator Interface",
+            font=("Lucida 20 bold")
+        )
+        self.title_label.grid(row=0, column=1)
+
+        # savings labelf
+        self.savings_label = ttk.Label(
+            self, text="Total Savings for" + self.time_raw,
+            font=("Lucidia 20 bold")
+        )
+        self.title_label.grid(row=1, column=1)
 
         # total income label
         self.total_income_label = ttk.Label(
-            self, text=f"Total Income: {self.total_income_calculation()}")
-        self.total_income_label.grid(row=2, column=4)
+            self, text=f"Total Income: ${self.total_income_calculation()}",
+            font=("Lucidia 20 bold")
+        )
+        self.total_income_label.grid(row=2, column=1)
 
         # total expenses label
         self.total_expenses_label = ttk.Label(
-            self, text=f"Total Expenses: {self.total_expenses_calculation()}")
-        self.total_expenses_label.grid(row=2, column=6)
+            self, text=f"Total Expenses: ${self.total_expenses_calculation()}",
+            font=("Lucidia 20 bold")
+        )
+        self.total_expenses_label.grid(row=3, column=1)
 
         # total savings label
         self.total_savings_label = ttk.Label(
-            self, text=f"Total Savings: {self.total_savings_calculation()}")
-        self.total_savings_label.grid(row=3, column=5)
+            self, text=f"Total Savings: ${self.total_savings_calculation()}",
+            font=("Lucidia 20 bold")
+        )
+        self.total_savings_label.grid(row=4, column=1)
 
         # previous savings label
         self.previous_savings_label = ttk.Label(
-            self, text=f"Savings for previous month: {self.previous_savings_calculation()}")
-        self.previous_savings_label.grid(row=5, column=4)
+            self, text=f"Savings for previous month: ${self.previous_savings_calculation()}",
+            font=("Lucidia 20 bold")
+        )
+        self.previous_savings_label.grid(row=5, column=1)
 
         # previous expenses label
         self.previous_expenses_label = ttk.Label(
-            self, text=f"Expenses for previous month: {self.previous_expenses_calculation()}")
-        self.previous_expenses_label.grid(row=5, column=5)
+            self, text=f"Expenses for previous month: ${self.previous_expenses_calculation()}",
+            font=("Lucidia 20 bold")
+        )
+        self.previous_expenses_label.grid(row=6, column=1)
 
         # average income label
         self.average_income_label = ttk.Label(
-            self, text=f"Average income: {self.average_income_calculation()}")
-        self.average_income_label.grid(row=5, column=6)
+            self, text=f"Average income: ${self.average_income_calculation()}",
+            font=("Lucidia 20 bold")
+        )
+        self.average_income_label.grid(row=7, column=1)
 
         # average expenses label
         self.average_expenses_label = ttk.Label(
-            self, text=f"Average expenses: {self.average_expenses_calculation()}")
-        self.average_expenses_label.grid(row=5, column=7)
+            self, text=f"Average expenses: ${self.average_expenses_calculation()}",
+            font=("Lucidia 20 bold")
+        )
+        self.average_expenses_label.grid(row=8, column=1)
 
     def total_income_calculation(self) -> str:
-        value: int
-        total = 0
-        for key in self.json_data[2]:  # get income from dictionary
-            value = int(self.json_data[2][key])  # pills here
-            total += value
-
-        return str(total)
+        try:
+            value: int
+            total = 0
+            for key in self.json_data[2]:  # get income from dictionary
+                value = int(self.json_data[2][key])  # pills here
+                total += value
+            return str(total)
+        except:
+            return "0"
 
     def total_expenses_calculation(self) -> str:
-        value: int
-        total = 0
-        for key in self.json_data[1]:
-            value = int(self.json_data[1][key])
-            total += value
-
-        return str(total)
+        try:
+            value: int
+            total = 0
+            for key in self.json_data[1]:
+                value = int(self.json_data[1][key])
+                total += value
+            return str(total)
+        except:
+            return "0"
 
     def total_savings_calculation(self) -> str:
         # pills here
-        return str(int(self.total_income_calculation()) - int(self.total_expenses_calculation()))
+        try:
+            return str(int(self.total_income_calculation()) - int(self.total_expenses_calculation()))
+        except:
+            return "0"
 
     def get_prev_data(self, current_year: str, current_month: str) -> list[str]:
         year = current_year
@@ -126,93 +157,105 @@ class calculator_window(tk.Tk):
             return json_data_prev
 
     def previous_savings_calculation(self) -> str:
-        json_data_prev = self.get_prev_data(
-            self.time_data[3], self.time_data[2])
+        try:
+            json_data_prev = self.get_prev_data(
+                self.time_data[3], self.time_data[2])
 
-        if len(json_data_prev) == 0:
-            return "N/A"
-        else:
-            value: int
-            total = 0
-            for key in json_data_prev[2]:
-                value = int(json_data_prev[2][key])
-                total += value
-            return str(total)
+            if len(json_data_prev) == 0:
+                return "0"
+            else:
+                value: int
+                total = 0
+                for key in json_data_prev[2]:
+                    value = int(json_data_prev[2][key])
+                    total += value
+                return str(total)
+        except:
+            return "0"
 
     def previous_expenses_calculation(self) -> str:
-        json_data_prev = self.get_prev_data(
-            self.time_data[3], self.time_data[2])
+        try:
+            json_data_prev = self.get_prev_data(
+                self.time_data[3], self.time_data[2])
 
-        if len(json_data_prev) == 0:
-            return "N/A"
-        else:
-            value: int
-            total = 0
-            for key in json_data_prev[1]:
-                value = int(json_data_prev[1][key])
-                total += value
-            return str(total)
+            if len(json_data_prev) == 0:
+                return "0"
+            else:
+                value: int
+                total = 0
+                for key in json_data_prev[1]:
+                    value = int(json_data_prev[1][key])
+                    total += value
+                return str(total)
+        except:
+            return "0"
 
     def average_income_calculation(self) -> str:
-        month_name = self.time_data[2]
-        month_num = self.month_lookup[month_name]
-        year = self.time_data[3]
-        json_data = self.get_prev_data(year, month_name)
-        total = 0
-        count = 0
-        while True:
-            if len(json_data) == 0:
-                break
-
-            for key in json_data[2]:
-                value = int(json_data[2][key])
-                total += value
-
-            count += 1
-
-            if (self.month_lookup[month_name] - 1) == 0:
-                year = str(int(year) - 1)
-                month_num = 12
-                month_name = "Dec"
-            else:
-                month_num = self.month_lookup[month_name] - 1
-                for key, value in self.month_lookup.items():
-                    if value == month_num:
-                        month_name = key
-
+        try:
+            month_name = self.time_data[2]
+            month_num = self.month_lookup[month_name]
+            year = self.time_data[3]
             json_data = self.get_prev_data(year, month_name)
+            total = 0
+            count = 0
+            while True:
+                if len(json_data) == 0:
+                    break
 
-        average = total / count
-        return str(average)
+                for key in json_data[2]:
+                    value = int(json_data[2][key])
+                    total += value
+
+                count += 1
+
+                if (self.month_lookup[month_name] - 1) == 0:
+                    year = str(int(year) - 1)
+                    month_num = 12
+                    month_name = "Dec"
+                else:
+                    month_num = self.month_lookup[month_name] - 1
+                    for key, value in self.month_lookup.items():
+                        if value == month_num:
+                            month_name = key
+
+                json_data = self.get_prev_data(year, month_name)
+
+            average = total / count
+            return str(round(average, 2))
+        except:
+            return "0"
 
     def average_expenses_calculation(self) -> str:
-        month_name = self.time_data[2]
-        month_num = self.month_lookup[month_name]
-        year = self.time_data[3]
-        json_data = self.get_prev_data(year, month_name)
-        total = 0
-        count = 0
-        while True:
-            if len(json_data) == 0:
-                break
-
-            for key in json_data[1]:
-                value = int(json_data[1][key])
-                total += value
-
-            count += 1
-
-            if (self.month_lookup[month_name] - 1) == 0:
-                year = str(int(year) - 1)
-                month_num = 12
-                month_name = "Dec"
-            else:
-                month_num = self.month_lookup[month_name] - 1
-                for key, value in self.month_lookup.items():
-                    if value == month_num:
-                        month_name = key
-
+        try:
+            month_name = self.time_data[2]
+            month_num = self.month_lookup[month_name]
+            year = self.time_data[3]
             json_data = self.get_prev_data(year, month_name)
+            total = 0
+            count = 0
+            while True:
+                if len(json_data) == 0:
+                    break
 
-        average = total / count
-        return str(average)
+                for key in json_data[1]:
+                    value = int(json_data[1][key])
+                    total += value
+
+                count += 1
+
+                if (self.month_lookup[month_name] - 1) == 0:
+                    year = str(int(year) - 1)
+                    month_num = 12
+                    month_name = "Dec"
+                else:
+                    month_num = self.month_lookup[month_name] - 1
+                    for key, value in self.month_lookup.items():
+                        if value == month_num:
+                            month_name = key
+
+                json_data = self.get_prev_data(year, month_name)
+
+            average = total / count
+            return str(round(average, 2))
+        except:
+            return "0"

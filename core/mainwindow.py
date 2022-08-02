@@ -9,13 +9,10 @@ import core.expensewindow as expwin
 import core.incomewindow as incwin
 import core.calculatorwindow as clcwin
 
-import tools.database as db
 import tools.datahandler as dh
-import tools.errorhandler as eh
 import tools.user as u
 
 # other
-import sqlite3 as sql
 import os.path
 import time
 import os
@@ -37,11 +34,8 @@ class main_window(tk.Tk):
         # get user id
         self.user_details = u.get_user_details()
 
-        self.json_data, self.json_obj = dh.pull_data(
-            self.time_data[3], self.time_data[2])
-
         self.title("PyMoney --> Main Interface")
-        self.geometry("600x300")
+        self.geometry("550x300")
 
         # set icon
         # working_dir = os.path.dirname(__file__)
@@ -51,20 +45,20 @@ class main_window(tk.Tk):
         # title labels
         self.title_label = ttk.Label(
             self, text=f"PyMoney Main Interface",
-            font=("Roman 30 bold")
+            font=("Lucidia 30 bold")
         )
         self.title_label.grid(row=0, column=0)
 
         self.user_label = ttk.Label(
             self, text=f" Logged In As: {self.user_details[1]} {self.user_details[2]}",
-            font=("Roman 20 bold")
+            font=("Lucidia 20 bold")
         )
         self.user_label.grid(row=1, column=0)
 
         # time label
         self.datetime_label = ttk.Label(
-            self, text=f"Current Time: {self.time_raw}",
-            font=("Roman 20 bold")
+            self, text=f"Current Date: {self.time_raw}",
+            font=("Lucidia 20 bold")
         )
         self.datetime_label.grid(row=2, column=0)
 
@@ -75,15 +69,18 @@ class main_window(tk.Tk):
             print("data file not present! creating new one!")
             dh.data_init(self.time_data[3], self.time_data[2])
 
+        self.json_data, self.json_obj = dh.pull_data(
+            self.time_data[3], self.time_data[2])
+
         # information labels
         self.current_balance_label = ttk.Label(
-            self, text=f"Current Balance: {self.current_balance_calc()}",
+            self, text=f"Current Balance: ${self.current_balance_calc()}",
             font=("Roman 20 bold")
         )
         self.current_balance_label.grid(row=3, column=0)
 
         self.current_expenses_label = ttk.Label(
-            self, text=f"Current monthly expenses: {self.current_expenses_calc()}",
+            self, text=f"Current monthly expenses: ${self.current_expenses_calc()}",
             font=("Roman 20 bold")
         )
         self.current_expenses_label.grid(row=4, column=0)
@@ -118,30 +115,34 @@ class main_window(tk.Tk):
 
     # label functions
     def current_balance_calc(self) -> str:
-        income_value: int
-        income_total = 0
-        for key in self.json_data[2]:
-            income_value = int(self.json_data[2][key])
-            income_total += income_value
+        try:
+            income_value: int
+            income_total = 0
+            for key in self.json_data[2]:
+                income_value = int(self.json_data[2][key])
+                income_total += income_value
 
-        expense_value: int
-        expense_total = 0
-        for key in self.json_data[1]:
-            expense_value = int(self.json_data[1][key])
-            expense_total += expense_value
-
-        return str(int(income_total) - int(income_total))
+            expense_value: int
+            expense_total = 0
+            for key in self.json_data[1]:
+                expense_value = int(self.json_data[1][key])
+                expense_total += expense_value
+            return str(int(income_total) - int(income_total))
+        except:
+            return "0"
 
     def current_expenses_calc(self) -> str:
-        value: int
-        total = 0
-        for key in self.json_data[1]:
-            value = int(self.json_data[1][key])
-            total += value
+        try:
+            value: int
+            total = 0
+            for key in self.json_data[1]:
+                value = int(self.json_data[1][key])
+                total += value
+            return str(value)
+        except:
+            return "0"
+            # event functions
 
-        return str(value)
-
-    # event functions
     def open_expense_window_EV(self) -> None:
         self.expense_window = expwin.expense_window(
             self.time_data, self.time_raw)

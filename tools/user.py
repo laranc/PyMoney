@@ -30,5 +30,5 @@ def get_user_details() -> list:
     global current_user
     try:
         return [current_user.id, current_user.firstname, current_user.lastname, current_user.age, current_user.dateofbirth, current_user.password]
-    except NameError:
+    except:
         print("Current user details undefined: Error in login process")

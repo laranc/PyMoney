@@ -1,73 +1,85 @@
 # database.py
 import sqlite3 as sql
-import tools.errorhandler as eh
 
 
 def create_database() -> None:
     # init connection
     try:
-        conn = sql.connect("user_data.sqlite")
+        connection = sql.connect("user_data.sqlite")
+        cursor = connection.cursor()
+        print("DEBUG: DB CONNECTION OPENED -- create_database()")
+        try:
+            # create initial table
+            # TEXT type for date translates to 'YYYY-MM-DD HH:MM:SS.SSS' as date, no other date type exists
+            cursor.execute('''
+                CREATE TABLE IF NOT EXISTS UserData
+                (id INT(10) PRIMARY KEY, firstname TEXT, lastname TEXT, age INT, dateofbirth TEXT, password TEXT);
+            ''')
+            # commit to db
+            connection.commit()
+        except:
+            print("ERR FAILED TO CREATE TABLE")
     except:
         print("ERR: FAILED TO CREATE DB")
-        raise eh.database_create_error()  # custom error handling
-
-    # create cursor object
-    cursor = conn.cursor()
-
-    # create initial table
-    # TEXT type for date translates to 'YYYY-MM-DD HH:MM:SS.SSS' as date, no other date type exists
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS UserData
-        (id INT(10) PRIMARY KEY, firstname TEXT, lastname TEXT, age INT, dateofbirth TEXT, password TEXT);
-    ''')
-
-    # commit to db
-    conn.commit()
-
-    # free resources
-    cursor.close()
-    conn.close()
-
-
-# TESTING seeing if a constant connection can work
-def connect_to_database() -> sql.Connection:
-    try:
-        conn: sql.Connection = sql.connect("user_data.sqlite")
-        return conn
-    except:
-        raise eh.database_connection_error()
-
-
-def create_database_cursor(conn: sql.Connection) -> sql.Cursor:
-    try:
-        cursor = conn.cursor()
-        return cursor
-    except:
-        print("ERR FAILED TO CREATE CURSOR")
-
-
-def disconnect_from_database(conn: sql.Connection, cursor: sql.Cursor) -> None:
-    try:
+    else:
         cursor.close()
-        conn.close()
-    except:
-        print("ERR FAILED TO CLOSE CURSOR AND CONNECTION")
+        connection.close()
+        print("DEBUG: DB CONNECTION CLOSED -- create_database()")
 
 
-def get_database_data(cursor) -> list:
+def fetch_data() -> list:
     try:
-        cursor.execute("SELECT * FROM UserData")
-        db_data = cursor.fetchall()
-        print(db_data)  # debug
-        return db_data
+        connection = sql.connect("user_data.sqlite")
+        cursor = connection.cursor()
+        print("DEBUG: DB CONNECITON OPENED -- fetch_data()")
+        try:
+            cursor.execute("SELECT * FROM UserData;")
+            db_data = cursor.fetchall()
+            print(db_data)  # debug
+            cursor.close()
+            connection.close()
+            print("DEBUG: DB CONNECTION CLOSED -- fetch_data()")
+            return db_data
+        except:
+            print("ERR FAILED TO WRITE TO DATABASE")
+            return []
     except:
-        raise eh.database_query_failed()
+        print("ERR FAILED TO CONNECT TO DATABASE")
+        return []
 
 
-def purge_database(conn: sql.Connection, cursor: sql.Cursor) -> None:
+def commit_data(command: str) -> None:
     try:
-        cursor.execute("DELETE FROM UserData")
-        conn.commit()
+        connection = sql.connect("user_data.sqlite")
+        cursor = connection.cursor()
+        try:
+            cursor.execute(command)
+            connection.commit()
+            print("DEBUG: DB CONNECTION OPENED -- commit_data()")
+        except:
+            print("ERR FAILED TO EXECUTE COMMAND: ", command)
+
+        try:
+            cursor.execute("SELECT * FROM UserData;")
+            print(cursor.fetchall())
+        except:
+            print("ERR FAILED TO EXECUTE FETCH ALL")
+    except:
+        print("ERR FAILED TO COMMIT DATA")
+    else:
+        cursor.close()
+        connection.close()
+        print("DEBUG: DB CONNECTION CLOSED -- commit_data()")
+
+
+def purge_database() -> None:
+    try:
+        connection = sql.connect("user_data.sqlite")
+        cursor = connection.cursor()
+        cursor.execute("DELETE FROM UserData;")
+        connection.commit()
         print("Database Purged")
+        cursor.close()
+        connection.close()
     except:
         print("ERR FAILED TO PURGE DATABASE")

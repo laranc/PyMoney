@@ -13,26 +13,31 @@ class register_window(tk.Tk):
         super().__init__()
         # set initial data
         self.title("PyMoney --> Register Window")
-        self.geometry("500x600")  # adjust these sizes!!!
+        self.geometry("400x200")  # adjust these sizes!!!
 
-        # title label
-        self.title_label = ttk.Label(self, text="Welcome New User!")
-        self.title_label.grid(row=0, column=3)
+        # # title label
+        # self.title_label = ttk.Label(
+        #     self, text="Welcome New User!", font="Lucidia 20 bold")
+        #self.title_label.grid(row=0, column=3)
 
-        # set the labels
-        self.firstname_label = ttk.Label(self, text="Firstname:")
+        # set the labels, font=()""Lucidi a 20 bold
+        self.firstname_label = ttk.Label(
+            self, text="Firstname:", font=("Lucidia 20 bold"))
         self.firstname_label.grid(row=2, column=3)
 
-        self.lastname_label = ttk.Label(self, text="Lastname:")
+        self.lastname_label = ttk.Label(
+            self, text="Lastname:", font=("Lucidia 20 bold"))
         self.lastname_label.grid(row=3, column=3)
 
-        self.age_label = ttk.Label(self, text="Age:")
+        self.age_label = ttk.Label(self, text="Age:", font=("Lucidia 20 bold"))
         self.age_label.grid(row=4, column=3)
 
-        self.dateofbirth_label = ttk.Label(self, text="Date of Birth:")
+        self.dateofbirth_label = ttk.Label(
+            self, text="Date of Birth:", font=("Lucidia 20 bold"))
         self.dateofbirth_label.grid(row=5, column=3)
 
-        self.password_label = ttk.Label(self, text="Password:")
+        self.password_label = ttk.Label(
+            self, text="Password:", font=("Lucidia 20 bold"))
         self.password_label.grid(row=6, column=3)
 
         # set the input boxes
@@ -46,7 +51,7 @@ class register_window(tk.Tk):
 
         self.age_text_widget = Text(self, height=1, width=20)
         self.age_text_widget.grid(row=4, column=4)
-        self.age_text_widget.insert("end", "e.g. 27")
+        self.age_text_widget.insert("end", "e.g. 53")
 
         self.dateofbirth_text_widget = Text(self, height=1, width=20)
         self.dateofbirth_text_widget.grid(row=5, column=4)
@@ -58,8 +63,8 @@ class register_window(tk.Tk):
 
         # submit button
         self.submit_new_user_button = ttk.Button(
-            self, text="SUBMIT", command=self.submit_new_user_EV)
-        self.submit_new_user_button.grid(row=7, column=3)
+            self, text="Register", command=self.submit_new_user_EV)
+        self.submit_new_user_button.grid(row=7, column=3, columnspan=2)
 
     def verify_user_input(self) -> None:
         try:
@@ -74,11 +79,6 @@ class register_window(tk.Tk):
         # verify user input
         self.verify_user_input()
 
-        conn = db.connect_to_database()
-        cursor = db.create_database_cursor(conn)
-
-        db_data = cursor.fetchall()
-
         # make user from info
         user_firstname = self.firstname_text_widget.get(1.0, tk.END+"-1c")
         user_lastname = self.lastname_text_widget.get(1.0, tk.END+"-1c")
@@ -88,6 +88,7 @@ class register_window(tk.Tk):
         user_password = self.password_text_widget.get()  # password specific
 
         user_id: int
+        db_data = db.fetch_data()
         if not db_data:
             user_id = 0
         else:
@@ -96,23 +97,11 @@ class register_window(tk.Tk):
         u.set_user_details(user_id, user_firstname, user_lastname,
                            user_age, user_dateofbirth, user_password)
 
-        # add data to database # NEEDS FIXING
-        cursor.execute(f"""
+        # add data to database
+        db.commit_data(f"""
             INSERT OR IGNORE INTO UserData(id, firstname, lastname, age, dateofbirth, password)
             VALUES('{user_id}', '{user_firstname}', '{user_lastname}', {user_age}, '{user_dateofbirth}', '{user_password}')
         """)
-
-        conn.commit()
-
-        ### DEBUG ###
-        # print data in db to confirm
-        cursor.execute("""
-            SELECT * FROM UserData
-        """)
-        print(cursor.fetchall())
-
-        # free db resources
-        db.disconnect_from_database(conn, cursor)
 
         # close window
         self.destroy()

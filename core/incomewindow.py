@@ -2,17 +2,15 @@
 import json
 import tkinter as tk
 from tkinter import ttk, Tk, Text, PhotoImage
+from tkinter.tix import COLUMN
 
 # database
 import tools.datahandler as dh
 
 
 class income_window(tk.Tk):
-    def __init__(self, time_data: str, time_raw: str, user_id: int) -> None:
+    def __init__(self, time_data: str, time_raw: str) -> None:
         super().__init__()
-        # get user id
-        self.user_id = user_id
-
         # get time
         self.time_data = time_data
         self.time_raw = time_raw
@@ -24,84 +22,99 @@ class income_window(tk.Tk):
 
         # set initial data
         self.title("PyMoney --> Income Window")
-        self.geometry("500x600")
+        self.geometry("500x300")
 
         # title label
         self.title_label = ttk.Label(
-            self, text="Income for " + self.time_raw)
-        self.title_label.grid(row=0, column=4)
+            self, text="PyMoney Income Interface",
+            font=("Lucidia 20 bold")
+        )
+        self.title_label.grid(row=0, column=0, columnspan=2)
+
+        # income label
+        self.income_label = ttk.Label(
+            self, text="Income for " + self.time_raw,
+            font="Lucidia 20 bold")
+        self.income_label.grid(row=1, column=0, columnspan=2)
 
         # table frame
         self.income_table = ttk.Frame(
             master=self, relief=tk.SOLID, borderwidth=2)
-        self.income_table.grid(row=6, column=1)
-
-        self.income_table.income_table_name_label = ttk.Label(
-            self.income_table, text="Name")
-        self.income_table.income_table_name_label.grid(row=0, column=0)
-
-        self.income_table.income_table_value_label = ttk.Label(
-            self.income_table, text="Value")
-        self.income_table.income_table_value_label.grid(row=0, column=1)
+        self.income_table.grid(row=2, column=0, rowspan=2)
 
         self.display_data()
 
         # add income frame
         self.add_income_frame = ttk.Frame(
             master=self, relief=tk.SOLID, borderwidth=2)
-        self.add_income_frame.grid(row=10, column=1)
+        self.add_income_frame.grid(row=2, column=1)
 
         # labels
+        self.add_income_frame.add_income_label = ttk.Label(
+            self.add_income_frame, text="Add Income")
+        self.add_income_frame.add_income_label.grid(
+            row=0, column=0, columnspan=2)
+
         self.add_income_frame.add_income_name_label = ttk.Label(
             self.add_income_frame, text="Income Name")
-        self.add_income_frame.add_income_name_label.grid(row=4, column=4)
+        self.add_income_frame.add_income_name_label.grid(row=1, column=0)
 
         self.add_income_frame.add_income_value_label = ttk.Label(
             self.add_income_frame, text="Income Value")
-        self.add_income_frame.add_income_value_label.grid(row=5, column=4)
+        self.add_income_frame.add_income_value_label.grid(row=2, column=0)
 
         # text input
         self.add_income_frame.add_income_name_input = Text(
             self.add_income_frame, height=1, width=20)
-        self.add_income_frame.add_income_name_input.grid(row=4, column=5)
+        self.add_income_frame.add_income_name_input.grid(row=1, column=1)
 
         self.add_income_frame.add_income_value_input = Text(
             self.add_income_frame, height=1, width=20)
-        self.add_income_frame.add_income_value_input.grid(row=5, column=5)
+        self.add_income_frame.add_income_value_input.grid(row=2, column=1)
 
         # submit data
-        self.add_new_income_button = ttk.Button(
-            self, text="Add New Income", command=self.add_new_income_EV)
-        self.add_new_income_button.grid(row=11, column=1)
+        self.add_income_frame.add_new_income_button = ttk.Button(
+            self.add_income_frame, text="Add New Income", command=self.add_new_income_EV)
+        self.add_income_frame.add_new_income_button.grid(
+            row=3, column=0, columnspan=2)
 
         # remove income frame
         self.remove_income_frame = ttk.Frame(
             master=self, relief=tk.SOLID, borderwidth=2)
-        self.remove_income_frame.grid(row=10, column=4)
+        self.remove_income_frame.grid(row=3, column=1)
+
+        # labels
+        self.remove_income_frame.remove_income_label = ttk.Label(
+            self.remove_income_frame, text="Remove Income")
+        self.remove_income_frame.remove_income_label.grid(
+            row=0, column=0, columnspan=2)
 
         self.remove_income_frame.remove_income_name_label = ttk.Label(
             self.remove_income_frame, text="Income Name")
-        self.remove_income_frame.remove_income_name_label.grid(row=4, column=4)
+        self.remove_income_frame.remove_income_name_label.grid(
+            row=1, column=0)
 
         self.remove_income_frame.remove_income_value_label = ttk.Label(
             self.remove_income_frame, text="Income Value")
         self.remove_income_frame.remove_income_value_label.grid(
-            row=5, column=4)
+            row=2, column=0)
 
         # text input
         self.remove_income_frame.remove_income_name_input = Text(
             self.remove_income_frame, height=1, width=20)
-        self.remove_income_frame.remove_income_name_input.grid(row=4, column=5)
+        self.remove_income_frame.remove_income_name_input.grid(
+            row=1, column=1)
 
         self.remove_income_frame.remove_income_value_input = Text(
             self.remove_income_frame, height=1, width=20)
         self.remove_income_frame.remove_income_value_input.grid(
-            row=5, column=5)
+            row=2, column=1)
 
         # submit data
-        self.remove_new_income_button = ttk.Button(
-            self, text="Remove Income", command=self.remove_income_EV)
-        self.remove_new_income_button.grid(row=11, column=4)
+        self.remove_income_frame.remove_new_income_button = ttk.Button(
+            self.remove_income_frame, text="Remove Income", command=self.remove_income_EV)
+        self.remove_income_frame.remove_new_income_button.grid(
+            row=3, column=0, columnspan=2)
 
     def display_data(self) -> None:
         # get json data
@@ -110,12 +123,23 @@ class income_window(tk.Tk):
         del(json_obj)
         print(f"DATA = {json_data}")
         if len(json_data) == 0:  # file empty
-            pass
+            self.income_table.income_table_name_label = ttk.Label(
+                self.income_table, text="Name-")
+            self.income_table.income_table_name_label.grid(row=0, column=0)
+            self.income_table.income_table_value_label = ttk.Label(
+                self.income_table, text="-Value")
+            self.income_table.income_table_value_label.grid(row=0, column=1)
         else:  # file is full
             self.income_table.destroy()
             self.income_table = ttk.Frame(
                 master=self, relief=tk.SOLID, borderwidth=2)
-            self.income_table.grid(row=6, column=1)
+            self.income_table.grid(row=2, column=0, rowspan=2)
+            self.income_table.income_table_name_label = ttk.Label(
+                self.income_table, text="Name-")
+            self.income_table.income_table_name_label.grid(row=0, column=0)
+            self.income_table.income_table_value_label = ttk.Label(
+                self.income_table, text="-Value")
+            self.income_table.income_table_value_label.grid(row=0, column=1)
             row = 1
             print(f"JSON DATA {json_data}")
             for key in json_data[2]:

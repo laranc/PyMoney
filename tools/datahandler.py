@@ -43,16 +43,14 @@ def check_data(year: str, month: str, cont: bool) -> bool:
         if not(data_present):
             if cont:
                 json_data = {
-                    year: [
-                            {
-                                "month": month,
-                                "expenses": {},
-                                "incomes": {}
-                            }
-                    ]
+
+                    "month": month,
+                    "expenses": {},
+                    "incomes": {}
+
                 }
 
-                data.append(json_data)
+                data[year].append(json_data)
                 data_file.close()
                 data_file = open(f"./json/{u.get_user_details()[0]}.json", 'w')
                 print(f"CEREALISED JSON: {json.dumps(data, indent=4)}")
