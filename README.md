@@ -1,2 +1,2 @@
-# task-5-collaboration
+# PyMoney
 Stage 2 Digital Technologies Task 5: Collaboration
